@@ -7,21 +7,21 @@
     "ios": "expo start --ios",
     "start": "expo start",
     "prebuild": "expo prebuild",
-    "lint": "eslint \"**/*.{js,jsx,ts,tsx}\" && prettier -c \"**/*.{js,jsx,ts,tsx,json}\"",
-    "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
+    "format:eslint": "eslint .",
+    "format:prettier": "prettier . --write",
     "web": "expo start --web",
     "generate-schema": "drizzle-kit generate"
   },
   "dependencies": {
-    "@expo/vector-icons": "^14.0.0",
+    "@expo/vector-icons": "~14.0.4",
     "@react-navigation/native": "^7.0.3",
     "babel-plugin-inline-import": "^3.0.0",
     "drizzle-orm": "^0.42.0",
-    "expo": "^52.0.46",
+    "expo": "~52.0.47",
     "expo-constants": "~17.0.8",
     "expo-drizzle-studio-plugin": "^0.1.2",
     "expo-linking": "~7.0.5",
-    "expo-router": "~4.0.6",
+    "expo-router": "~4.0.21",
     "expo-sqlite": "~15.1.4",
     "expo-status-bar": "~2.0.1",
     "expo-system-ui": "~4.0.9",
@@ -39,20 +39,18 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@eslint/js": "^9.34.0",
     "@types/react": "~18.3.12",
-    "@typescript-eslint/eslint-plugin": "^7.7.0",
-    "@typescript-eslint/parser": "^7.7.0",
     "drizzle-kit": "^0.31.0",
-    "eslint": "^8.57.0",
-    "eslint-config-universe": "^12.0.1",
+    "eslint": "^9.34.0",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.3.0",
     "prettier": "^3.2.5",
+    "prettier-plugin-organize-imports": "^4.2.0",
     "prettier-plugin-tailwindcss": "^0.5.11",
     "tailwindcss": "^3.4.0",
-    "typescript": "~5.3.3"
-  },
-  "eslintConfig": {
-    "extends": "universe/native",
-    "root": true
+    "typescript": "~5.3.3",
+    "typescript-eslint": "^8.41.0"
   },
   "private": true
 }

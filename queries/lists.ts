@@ -1,8 +1,8 @@
-import { eq, like, desc } from 'drizzle-orm';
+import { desc, eq, like } from 'drizzle-orm';
 
 import { db } from '../db';
-import { simulateNetworkLatency } from './utils';
 import { lists } from '../db/schema';
+import { simulateNetworkLatency } from './utils';
 
 /**
  * Retrieves all lists from the database

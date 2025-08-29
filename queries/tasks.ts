@@ -1,8 +1,8 @@
-import { eq, like, desc, and, gt } from 'drizzle-orm';
+import { and, desc, eq, gt, like } from 'drizzle-orm';
 
 import { db } from '../db';
-import { simulateNetworkLatency } from './utils';
 import { tasks } from '../db/schema';
+import { simulateNetworkLatency } from './utils';
 
 /**
  * Retrieves all tasks from the database
@@ -159,7 +159,7 @@ export const updateTask = async (
     is_completed: boolean;
     due_date: string;
     list_id: number;
-  }>
+  }>,
 ) => {
   await simulateNetworkLatency();
   return db

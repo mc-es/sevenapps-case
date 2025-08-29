@@ -9,7 +9,7 @@ export interface BearState {
 
 export const useStore = create<BearState>((set) => ({
   bears: 0,
-  increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
-  removeAllBears: () => set({ bears: 0 }),
-  updateBears: (newBears) => set({ bears: newBears }),
+  increasePopulation: (): void => set((state) => ({ bears: state.bears + 1 })),
+  removeAllBears: (): void => set({ bears: 0 }),
+  updateBears: (newBears: number): void => set({ bears: newBears }),
 }));
