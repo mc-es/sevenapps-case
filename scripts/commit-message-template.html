@@ -1,0 +1,1135 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Commit Message Guidelines</title>
+    <link rel="icon" type="image/x-icon" href="/public/commit-template-favicon.ico" />
+    <style>
+      /* -----------------------------
+        Design System (CSS Variables)
+      ------------------------------*/
+      :root {
+        --bg: #0b1020;
+        --bg-soft: #11162a;
+        --surface: #0e1224cc;
+        --card: #0f162fdd;
+        --text: #e6eaf6;
+        --muted: #aab3c5;
+        --brand: #7aa2ff;
+        --brand-2: #a77bff;
+        --ok: #37c173;
+        --bad: #ff6b6b;
+        --warn: #f8c24e;
+        --border: #2a3353;
+        --shadow: 0 10px 30px rgba(2, 6, 23, 0.45);
+        --radius-lg: 16px;
+        --radius-xl: 24px;
+        --radius-full: 999px;
+        --sb-size: 12px;
+        --sb-track: color-mix(in oklab, var(--bg) 85%, transparent);
+        --sb-thumb: color-mix(in oklab, var(--text) 10%, var(--border));
+        --sb-thumb-hover: color-mix(in oklab, var(--text) 18%, var(--border));
+        --sb-corner: var(--surface);
+      }
+      html[data-theme='light'] {
+        --bg: #f6f7fb;
+        --bg-soft: #eef1f8;
+        --surface: #ffffffee;
+        --card: #ffffffdd;
+        --text: #0f172a;
+        --muted: #4b5563;
+        --brand: #4f46e5;
+        --brand-2: #7c3aed;
+        --ok: #16a34a;
+        --bad: #dc2626;
+        --warn: #b45309;
+        --border: #e5e7eb;
+        --shadow: 0 10px 30px rgba(2, 6, 23, 0.12);
+      }
+      * {
+        box-sizing: border-box;
+        scrollbar-color: var(--sb-thumb) var(--sb-track);
+        scrollbar-width: thin;
+      }
+      *::-webkit-scrollbar {
+        width: var(--sb-size);
+        height: var(--sb-size);
+      }
+      *::-webkit-scrollbar-track {
+        border-radius: var(--radius-xl);
+        background: var(--sb-track);
+      }
+      *::-webkit-scrollbar-thumb {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        background: var(--sb-thumb);
+      }
+      *::-webkit-scrollbar-thumb:hover {
+        background: var(--sb-thumb-hover);
+      }
+      *::-webkit-scrollbar-corner {
+        background: var(--sb-corner);
+      }
+      @media (prefers-contrast: more) {
+        * {
+          scrollbar-width: auto;
+        }
+        *::-webkit-scrollbar-thumb {
+          background: color-mix(in oklab, var(--text) 26%, var(--border));
+        }
+      }
+      @media (max-width: 640px) {
+        :root {
+          --sb-size: 10px;
+        }
+      }
+      html,
+      body {
+        overflow-x: clip;
+      }
+      @supports not (overflow-x: clip) {
+        html,
+        body {
+          overflow-x: hidden;
+        }
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        background:
+          radial-gradient(
+            1200px 600px at 15% -10%,
+            color-mix(in oklab, var(--brand) 35%, transparent) 0%,
+            transparent 70%
+          ),
+          radial-gradient(
+            1000px 800px at 110% 20%,
+            color-mix(in oklab, var(--brand-2) 35%, transparent) 0%,
+            transparent 70%
+          ),
+          linear-gradient(180deg, var(--bg) 0%, var(--bg-soft) 100%);
+        background-attachment: fixed;
+        min-height: 100dvh;
+        color: var(--text);
+        font:
+          16px/1.6 system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Ubuntu,
+          Cantarell,
+          Noto Sans,
+          'Helvetica Neue',
+          Arial,
+          'Apple Color Emoji',
+          'Segoe UI Emoji';
+      }
+      .scroll-top-fab {
+        display: inline-flex;
+        position: fixed;
+        right: 54px;
+        bottom: 54px;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        transform: translateY(6px) scale(0.96);
+        visibility: hidden;
+        opacity: 0;
+        z-index: 1000;
+        transition:
+          opacity 0.18s ease,
+          transform 0.18s ease,
+          visibility 0.18s ease;
+        cursor: pointer;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-full);
+        background: color-mix(in oklab, var(--card) 75%, transparent);
+        padding: 10px 12px;
+        color: var(--text);
+      }
+      .scroll-top-fab:hover {
+        transform: translateY(-1px) scale(1.02);
+      }
+      .scroll-top-fab.show {
+        transform: translateY(0) scale(1);
+        visibility: visible;
+        opacity: 1;
+      }
+      .scroll-top-fab svg {
+        width: 28px;
+        height: 28px;
+      }
+      @media (prefers-contrast: more) {
+        .scroll-top-fab {
+          background: color-mix(in oklab, var(--text) 14%, var(--surface));
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .scroll-top-fab {
+          transition: none;
+        }
+      }
+      main.container {
+        flex: 1 0 auto;
+      }
+      a {
+        color: var(--brand);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .hero {
+        position: relative;
+        padding: 56px 20px 32px;
+      }
+      .hero .wrap {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: start;
+        gap: 16px;
+        margin: 0 auto;
+        max-width: 1100px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        backdrop-filter: saturate(130%);
+      }
+      .logo {
+        display: grid;
+        place-items: center;
+        box-shadow: var(--shadow);
+        border-radius: var(--radius-xl);
+        background: linear-gradient(135deg, var(--brand), var(--brand-2));
+        width: 44px;
+        height: 44px;
+      }
+      .logo svg {
+        filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25));
+      }
+      h1 {
+        margin: 0;
+        font-size: clamp(1.4rem, 1rem + 2vw, 2rem);
+        letter-spacing: 0.2px;
+      }
+      .subtitle {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 0.98rem;
+      }
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-full);
+        background: color-mix(in oklab, var(--card) 70%, transparent);
+        padding: 10px 14px;
+        color: var(--text);
+        line-height: 1;
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+      .btn-primary {
+        border-color: transparent;
+        background: linear-gradient(135deg, var(--brand), var(--brand-2));
+        color: white;
+      }
+      .container {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 40px;
+        margin: 18px auto 56px;
+        padding: 0 20px;
+        max-width: 1100px;
+      }
+      @media (max-width: 980px) {
+        .container {
+          grid-template-columns: 1fr;
+        }
+        .toc {
+          display: none !important;
+        }
+      }
+      .toc {
+        position: sticky;
+        top: 16px;
+        align-self: start;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        background: var(--surface);
+        padding: 16px;
+      }
+      .toc h3 {
+        margin: 0 0 10px;
+        color: var(--muted);
+        font-size: 0.95rem;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+      }
+      .toc a {
+        display: block;
+        border-radius: 10px;
+        padding: 8px 10px;
+        color: inherit;
+      }
+      .toc a:hover {
+        background: color-mix(in oklab, var(--brand) 18%, transparent);
+      }
+      .card {
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        background: var(--surface);
+        overflow: clip;
+      }
+      .card .content {
+        padding: 22px;
+      }
+      .lead {
+        color: var(--muted);
+        font-size: 1.05rem;
+      }
+      .section {
+        margin-top: 10px;
+        padding-top: 14px;
+      }
+      .section h2,
+      .section h3,
+      .section h4 {
+        scroll-margin-top: 90px;
+      }
+      .section-hr {
+        margin: clamp(18px, 2vw, 32px) 0;
+        box-shadow: 0 1px 0 color-mix(in oklab, var(--bg) 70%, transparent);
+        border: 0;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          color-mix(in oklab, var(--border) 85%, transparent),
+          transparent
+        );
+        width: 100%;
+        height: 2px;
+      }
+      @media (prefers-contrast: more) {
+        .section-hr {
+          box-shadow: none;
+          background: color-mix(in oklab, var(--text) 25%, var(--border));
+          height: 2px;
+        }
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: color-mix(in oklab, var(--card) 70%, transparent);
+        padding: 6px 12px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        letter-spacing: 0.2px;
+      }
+      .chip .dot {
+        border-radius: 50%;
+        background: currentColor;
+        width: 8px;
+        height: 8px;
+      }
+      .chip.ok {
+        border-color: color-mix(in oklab, var(--ok) 30%, var(--border));
+        color: var(--ok);
+      }
+      .chip.bad {
+        border-color: color-mix(in oklab, var(--bad) 30%, var(--border));
+        color: var(--bad);
+      }
+      pre,
+      code {
+        font-family:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+          monospace;
+        white-space: pre-wrap;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+      }
+      pre {
+        margin: 12px 0;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: linear-gradient(
+          180deg,
+          color-mix(in oklab, var(--bg) 75%, transparent),
+          color-mix(in oklab, var(--bg) 85%, transparent)
+        );
+        padding: 14px 16px;
+        max-width: 100%;
+        overflow: auto;
+      }
+      ul.clean {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      ul.clean li {
+        border-bottom: 1px dashed var(--border);
+        padding: 10px 0;
+      }
+      ul.clean li:last-child {
+        border-bottom: 0;
+      }
+      .example-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 16px;
+      }
+      @media (max-width: 780px) {
+        .example-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .kv {
+        display: grid;
+        grid-template-columns: 140px 1fr;
+        align-items: start;
+        gap: 10px;
+      }
+      @media (max-width: 580px) {
+        .kv {
+          grid-template-columns: 1fr;
+        }
+      }
+      .rule {
+        display: grid;
+        grid-template-columns: 24px 1fr;
+        align-items: start;
+        gap: 12px;
+      }
+      .check,
+      .x {
+        display: inline-flex;
+        flex: 0 0 18px;
+        justify-content: center;
+        align-items: center;
+        vertical-align: middle;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        color: #fff;
+        font-size: 12px;
+        line-height: 0;
+      }
+      .check {
+        background: var(--ok);
+      }
+      .x {
+        background: var(--bad);
+      }
+      .validator {
+        margin-top: 10px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        background: color-mix(in oklab, var(--card) 85%, transparent);
+        padding: 16px;
+      }
+      .validator input {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: color-mix(in oklab, var(--bg) 10%, transparent);
+        padding: 12px 14px;
+        width: 100%;
+        color: inherit;
+      }
+      .hints {
+        display: grid;
+        gap: 8px;
+        margin: 12px 0 0;
+      }
+      .hint {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 8px 10px;
+        width: fit-content;
+      }
+      .meta {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        .btn,
+        .chip {
+          transition:
+            transform 0.12s ease,
+            background 0.2s ease,
+            box-shadow 0.2s ease;
+        }
+        a,
+        .toc a {
+          transition: background 0.2s ease;
+        }
+      }
+      .container > * {
+        min-width: 0;
+      }
+      .ex-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+      .seg {
+        display: inline-flex;
+        gap: 4px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: color-mix(in oklab, var(--card) 85%, transparent);
+        padding: 4px;
+      }
+      .seg-btn {
+        cursor: pointer;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        padding: 8px 14px;
+        color: inherit;
+      }
+      .seg-btn.active {
+        box-shadow: var(--shadow);
+        background: linear-gradient(135deg, var(--brand), var(--brand-2));
+        color: #fff;
+      }
+      .ex-list {
+        display: grid;
+        gap: 8px;
+        margin: 8px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      .ex-item {
+        display: grid;
+        grid-template-columns: 26px 1fr auto;
+        align-items: center;
+        gap: 10px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: color-mix(in oklab, var(--card) 85%, transparent);
+        padding: 10px 12px;
+      }
+      .flag {
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        color: #fff;
+        font-size: 12px;
+      }
+      .flag.ok {
+        background: var(--ok);
+      }
+      .flag.bad {
+        background: var(--bad);
+      }
+      .copy-btn {
+        cursor: pointer;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: color-mix(in oklab, var(--card) 70%, transparent);
+        padding: 6px 10px;
+        color: var(--text);
+      }
+      .copy-btn:hover {
+        transform: translateY(-1px);
+      }
+      .ex-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 8px;
+      }
+      .btn.sm {
+        padding: 6px 10px;
+        font-size: 0.92rem;
+      }
+      .site-footer {
+        flex-shrink: 0;
+        margin: 36px 0 24px;
+      }
+      .hidden {
+        display: none;
+      }
+      .site-footer .wrap {
+        margin: 0 auto;
+        padding: 0 20px;
+        max-width: 1100px;
+      }
+      .footer-bar {
+        backdrop-filter: blur(8px) saturate(140%);
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        background: var(--surface);
+      }
+      .footer-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+      }
+      .footer-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+      }
+      .footer-brand .dotlogo {
+        box-shadow: var(--shadow);
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--brand), var(--brand-2));
+        width: 10px;
+        height: 10px;
+      }
+      .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .footer-links a {
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: color-mix(in oklab, var(--card) 85%, transparent);
+        padding: 6px 10px;
+        color: inherit;
+        text-decoration: none;
+      }
+      .footer-links a:hover {
+        text-decoration: underline;
+      }
+      .footer-social {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .footer-social a {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: color-mix(in oklab, var(--card) 80%, transparent);
+        padding: 6px 10px;
+        color: var(--text);
+        text-decoration: none;
+      }
+      .footer-social a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <button
+      id="toTopFab"
+      class="scroll-top-fab"
+      type="button"
+      aria-label="Back to the top"
+      title="Go up"
+    >
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+        <path d="M12 5l-7 7h4v7h6v-7h4l-7-7z" fill="currentColor" />
+      </svg>
+    </button>
+    <header class="hero">
+      <div class="wrap">
+        <div class="brand">
+          <div class="logo" aria-hidden="true">
+            <svg
+              width="30"
+              height="30"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              role="img"
+              aria-label="Logo"
+            >
+              <path d="M4 12a8 8 0 0 1 8-8v4a4 4 0 0 0-4 4H4Z" fill="white" opacity=".9" />
+              <path d="M12 20a8 8 0 0 0 8-8h-4a4 4 0 0 1-4 4v4Z" fill="white" />
+            </svg>
+          </div>
+          <div>
+            <h1>Commit Message Format Guidelines</h1>
+            <p class="subtitle">
+              A compact, elegant reference for crafting consistent commit messages.
+            </p>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn" id="themeBtn" type="button" aria-pressed="false" title="Toggle theme">
+            <span id="themeIcon">🌙</span> <span id="themeLabel">Dark</span>
+          </button>
+          <a class="btn btn-primary" href="#validator" title="Try the quick validator">Try it</a>
+        </div>
+      </div>
+    </header>
+    <main class="container">
+      <nav class="toc" aria-label="Table of contents">
+        <h3>On this page</h3>
+        <a href="#structure">Structure</a>
+        <a href="#type">Type</a>
+        <a href="#scope">Scope</a>
+        <a href="#subject">Subject</a>
+        <a href="#length">Length</a>
+        <a href="#verb">Contains a verb</a>
+        <a href="#tense">Verb tense</a>
+        <a href="#examples">Examples</a>
+        <a href="#validator">Quick validator</a>
+      </nav>
+      <article class="card">
+        <div class="content">
+          <p class="lead">
+            A well-structured commit message enhances code readability and helps maintain a clear
+            project history. Follow these rules for consistency and clarity.
+          </p>
+          <section id="structure" class="section">
+            <h2>Structure</h2>
+            <p>Each message should follow:</p>
+            <pre><code>&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;</code></pre>
+            <div class="kv">
+              <div>
+                <span class="chip"><span class="dot"></span> type</span>
+              </div>
+              <div>Purpose of the change, chosen from a fixed set (see below).</div>
+              <div>
+                <span class="chip"><span class="dot"></span> scope</span>
+              </div>
+              <div>
+                Area affected. Use a short noun in <em>kebab-case</em> (e.g.,
+                <code>auth-service</code>).
+              </div>
+              <div>
+                <span class="chip"><span class="dot"></span> subject</span>
+              </div>
+              <div>Concise imperative sentence describing the change.</div>
+            </div>
+          </section>
+          <hr class="section-hr" />
+          <section id="type" class="section">
+            <h2>1. Type</h2>
+            <p><strong>Use lowercase.</strong> Pick one:</p>
+            <ul class="clean">
+              <li><code>feat</code>: new feature</li>
+              <li><code>fix</code>: bug fix</li>
+              <li><code>change</code>: non-breaking changes</li>
+              <li><code>chore</code>: maintenance (refactor, deps, build)</li>
+              <li><code>docs</code>: documentation only</li>
+              <li><code>style</code>: formatting, missing semicolons, etc.</li>
+              <li><code>perf</code>: performance improvement</li>
+              <li><code>test</code>: add or update tests</li>
+            </ul>
+          </section>
+          <hr class="section-hr" />
+          <section id="scope" class="section">
+            <h2>2. Scope</h2>
+            <p>Short, descriptive noun in <em>kebab-case</em>. Examples:</p>
+            <pre><code>fix(auth-service): correct token validation</code><br><code>feat(ui-button): add loading spinner</code></pre>
+          </section>
+          <hr class="section-hr" />
+          <section id="subject" class="section">
+            <h2>3. Subject</h2>
+            <div class="rule">
+              <span class="check">✓</span>
+              <div>
+                Write in <strong>imperative mood</strong> (command-like): <code>add</code>,
+                <code>fix</code>, <code>update</code>.
+              </div>
+            </div>
+            <div class="rule">
+              <span class="check">✓</span>
+              <div>Use <strong>lowercase</strong>; only capitalize proper nouns.</div>
+            </div>
+            <div class="rule">
+              <span class="x">✕</span>
+              <div>Don’t end with a period <code>.</code></div>
+            </div>
+          </section>
+          <hr class="section-hr" />
+          <section id="length" class="section">
+            <h2>4. Length</h2>
+            <p><strong>Subject ≤ 100 chars.</strong> If needed, add a body after a blank line.</p>
+          </section>
+          <hr class="section-hr" />
+          <section id="verb" class="section">
+            <h2>5. Contains a verb</h2>
+            <p>The message must include a verb, e.g.:</p>
+            <pre><code>feat(ui): add loading spinner</code><br><code>docs(readme): update installation steps</code></pre>
+          </section>
+          <hr class="section-hr" />
+          <section id="tense" class="section">
+            <h2>6. Verb tense</h2>
+            <div class="rule">
+              <span class="x">✕</span>
+              <div>
+                <strong>Wrong:</strong> <code>docs(readme): updated installation steps</code>
+              </div>
+            </div>
+            <div class="rule">
+              <span class="check">✓</span>
+              <div>
+                <strong>Correct:</strong> <code>docs(readme): update installation steps</code>
+              </div>
+            </div>
+          </section>
+          <section id="examples" class="section">
+            <div class="ex-header">
+              <h2>Example commit messages</h2>
+              <div class="seg" role="tablist" aria-label="Examples filter">
+                <button class="seg-btn active" data-tab="good" role="tab" aria-selected="true">
+                  Good
+                </button>
+                <button class="seg-btn" data-tab="bad" role="tab" aria-selected="false">Bad</button>
+              </div>
+            </div>
+            <div class="examples" id="examplesList">
+              <ul class="ex-list" data-kind="good">
+                <li class="ex-item">
+                  <span class="flag ok" aria-label="Good">✓</span>
+                  <code>feat(theme): add theme provider for dynamic theme switching</code>
+                  <button class="copy-btn" aria-label="Copy example">Copy</button>
+                </li>
+                <li class="ex-item">
+                  <span class="flag ok" aria-label="Good">✓</span>
+                  <code>feat(tailwind): implement Tailwindcss for styling</code>
+                  <button class="copy-btn" aria-label="Copy example">Copy</button>
+                </li>
+                <li class="ex-item">
+                  <span class="flag ok" aria-label="Good">✓</span>
+                  <code>fix(auth-service): correct token validation</code>
+                  <button class="copy-btn" aria-label="Copy example">Copy</button>
+                </li>
+                <li class="ex-item">
+                  <span class="flag ok" aria-label="Good">✓</span>
+                  <code>chore(set-up): add ESLint rules for code linting</code>
+                  <button class="copy-btn" aria-label="Copy example">Copy</button>
+                </li>
+                <li class="ex-item">
+                  <span class="flag ok" aria-label="Good">✓</span>
+                  <code>docs(readme): clarify installation steps</code>
+                  <button class="copy-btn" aria-label="Copy example">Copy</button>
+                </li>
+                <li class="ex-item">
+                  <span class="flag ok" aria-label="Good">✓</span>
+                  <code>test(unit): add tests for login component</code>
+                  <button class="copy-btn" aria-label="Copy example">Copy</button>
+                </li>
+              </ul>
+              <ul class="ex-list hidden" data-kind="bad">
+                <li class="ex-item">
+                  <span class="flag bad" aria-label="Bad">✕</span>
+                  <code>feature(theme): add theme provider for dynamic theme switching</code>
+                  <button class="copy-btn" aria-label="Copy example">Copy</button>
+                </li>
+                <li class="ex-item">
+                  <span class="flag bad" aria-label="Bad">✕</span>
+                  <code>feat: configure i18n-js for TR and EN language support</code>
+                  <button class="copy-btn" aria-label="Copy example">Copy</button>
+                </li>
+                <li class="ex-item">
+                  <span class="flag bad" aria-label="Bad">✕</span>
+                  <code>feat(): add splash screen and app icon</code>
+                  <button class="copy-btn" aria-label="Copy example">Copy</button>
+                </li>
+                <li class="ex-item">
+                  <span class="flag bad" aria-label="Bad">✕</span>
+                  <code>chore(Set-up): add ESLint rules for code linting</code>
+                  <button class="copy-btn" aria-label="Copy example">Copy</button>
+                </li>
+                <li class="ex-item">
+                  <span class="flag bad" aria-label="Bad">✕</span>
+                  <code>docs(file): Add README file with project overview</code>
+                  <button class="copy-btn" aria-label="Copy example">Copy</button>
+                </li>
+                <li class="ex-item">
+                  <span class="flag bad" aria-label="Bad">✕</span>
+                  <code>test(unit): added test cases for login component</code>
+                  <button class="copy-btn" aria-label="Copy example">Copy</button>
+                </li>
+              </ul>
+            </div>
+            <div class="ex-actions">
+              <button
+                id="copyVisible"
+                class="btn sm"
+                type="button"
+                aria-label="Copy all shown examples"
+              >
+                Copy visible
+              </button>
+            </div>
+          </section>
+          <hr class="section-hr" />
+          <section id="validator" class="section">
+            <h2>Quick validator</h2>
+            <p class="meta">Paste a commit message to check common rules instantly.</p>
+            <div class="validator" role="region" aria-live="polite">
+              <input
+                id="msg"
+                type="text"
+                placeholder="e.g. feat(auth-service): add token refresh"
+                aria-label="Commit message"
+              />
+              <div class="hints" id="hints"></div>
+            </div>
+          </section>
+          <p class="meta">
+            Following these guidelines keeps your history clean, informative, and easy to navigate.
+          </p>
+        </div>
+      </article>
+    </main>
+    <footer class="site-footer" role="contentinfo">
+      <div class="wrap">
+        <div class="footer-bar">
+          <div class="footer-row">
+            <div class="footer-brand">
+              <span class="dotlogo" aria-hidden="true"></span>
+              <span>Commit Guidelines</span>
+            </div>
+            <nav class="footer-links" aria-label="Resources">
+              <a href="https://typicode.github.io/husky/" target="_blank" rel="noopener">Husky</a>
+              <a href="https://commitlint.js.org/" target="_blank" rel="noopener">commitlint</a>
+              <a href="https://prettier.io/" target="_blank" rel="noopener">Prettier</a>
+              <a href="https://eslint.org/" target="_blank" rel="noopener">ESLint</a>
+              <a href="https://github.com/okonet/lint-staged" target="_blank" rel="noopener"
+                >lint-staged</a
+              >
+            </nav>
+            <div class="footer-social">
+              <a id="gh" href="#" target="_blank" rel="noopener" aria-label="GitHub">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M12 .5a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58v-2.02c-3.34.73-4.04-1.61-4.04-1.61-.55-1.4-1.34-1.78-1.34-1.78-1.09-.75.08-.74.08-.74 1.2.08 1.83 1.23 1.83 1.23 1.07 1.83 2.8 1.3 3.48.99.11-.78.42-1.3.76-1.6-2.67-.3-5.48-1.33-5.48-5.93 0-1.31.47-2.38 1.23-3.22-.12-.3-.53-1.52.12-3.16 0 0 1.01-.32 3.3 1.23a11.46 11.46 0 0 1 6.01 0c2.3-1.55 3.31-1.23 3.31-1.23.65 1.64.24 2.86.12 3.16.77.84 1.23 1.9 1.23 3.22 0 4.61-2.81 5.62-5.49 5.92.43.37.81 1.09.81 2.2v3.26c0 .32.21.7.82.58A12 12 0 0 0 12 .5Z"
+                  />
+                </svg>
+                <span>GitHub</span>
+              </a>
+              <a id="li" href="#" target="_blank" rel="noopener" aria-label="LinkedIn">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M4.98 3.5a2.5 2.5 0 1 1 0 5.001 2.5 2.5 0 0 1 0-5ZM3 9.75h3.96V21H3V9.75Zm7.32 0h3.79v1.54h.05c.53-1 1.83-2.06 3.77-2.06 4.03 0 4.77 2.65 4.77 6.1V21h-3.96v-4.95c0-1.18-.02-2.69-1.64-2.69-1.64 0-1.9 1.28-1.9 2.6V21h-3.96V9.75Z"
+                  />
+                </svg>
+                <span>LinkedIn</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script>
+      const html = document.documentElement;
+      const themeBtn = document.getElementById('themeBtn');
+      const themeIcon = document.getElementById('themeIcon');
+      const themeLabel = document.getElementById('themeLabel');
+      const saved = localStorage.getItem('theme');
+      if (saved) html.setAttribute('data-theme', saved);
+      updateThemeButton();
+      themeBtn.addEventListener('click', () => {
+        const current = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', current);
+        localStorage.setItem('theme', current);
+        updateThemeButton();
+      });
+      function updateThemeButton() {
+        const dark = html.getAttribute('data-theme') === 'dark';
+        themeBtn.setAttribute('aria-pressed', String(dark));
+        themeIcon.textContent = dark ? '☀️' : '🌙';
+        themeLabel.textContent = dark ? 'Light' : 'Dark';
+      }
+
+      const msg = document.getElementById('msg');
+      const hints = document.getElementById('hints');
+      const TYPE_SET = ['feat', 'fix', 'change', 'chore', 'docs', 'style', 'perf', 'test'];
+      const re = /^(?<type>[a-z]+)\((?<scope>[a-z0-9-]+)\):\s(?<subject>.+)$/;
+
+      const VERBS = [
+        'add',
+        'fix',
+        'update',
+        'remove',
+        'refactor',
+        'rename',
+        'revert',
+        'implement',
+        'improve',
+        'optimize',
+        'optimise',
+        'configure',
+        'create',
+        'adjust',
+        'bump',
+        'introduce',
+        'document',
+        'clarify',
+      ];
+
+      const PAST_TENSE_WORDS = [
+        'added',
+        'fixed',
+        'updated',
+        'removed',
+        'renamed',
+        'refactored',
+        'implemented',
+        'improved',
+        'configured',
+        'created',
+        'adjusted',
+        'bumped',
+        'introduced',
+        'documented',
+        'clarified',
+      ];
+
+      function validate(value) {
+        hints.innerHTML = '';
+        if (!value.trim()) return;
+
+        const items = [];
+        const m = value.match(re);
+
+        if (m) {
+          const { type, scope, subject } = m.groups;
+
+          items.push([true, `Matches pattern <type>(<scope>): <subject>`]);
+          items.push([TYPE_SET.includes(type), `Type is one of: ${TYPE_SET.join(', ')}`]);
+          items.push([/^[a-z0-9-]+$/.test(scope), 'Scope is kebab-case']);
+          items.push([
+            /^[a-z]/.test(subject) && !/[.]$/.test(subject),
+            'Subject is lowercase and has no trailing period',
+          ]);
+
+          const hasVerb = VERBS.some((v) => new RegExp(`\\b${v}\\b`, 'i').test(subject));
+          items.push([hasVerb, `Subject contains a verb (${VERBS.join(', ')})`]);
+
+          items.push([subject.length <= 100, 'Subject ≤ 100 characters']);
+
+          const firstWord = subject.trim().split(/\s+/)[0];
+          const startsPastTense = PAST_TENSE_WORDS.includes(firstWord) || /ed$/i.test(firstWord);
+          items.push([!startsPastTense, 'Prefer imperative mood (avoid past tense at start)']);
+        } else {
+          items.push([false, 'Does not match <type>(<scope>): <subject>']);
+        }
+
+        for (const [ok, text] of items) {
+          const el = document.createElement('div');
+          el.className = 'hint';
+          el.innerHTML = `<span class="${ok ? 'check' : 'x'}">${ok ? '✓' : '✕'}</span><span>${text}</span>`;
+          hints.appendChild(el);
+        }
+      }
+      msg.addEventListener('input', (e) => validate(e.target.value));
+
+      validate((msg.value = 'feat(ui): add loading spinner'));
+      (function () {
+        const segBtns = document.querySelectorAll('.seg-btn');
+        const lists = document.querySelectorAll('.ex-list');
+        segBtns.forEach((btn) =>
+          btn.addEventListener('click', () => {
+            segBtns.forEach((b) => {
+              b.classList.remove('active');
+              b.setAttribute('aria-selected', 'false');
+            });
+            btn.classList.add('active');
+            btn.setAttribute('aria-selected', 'true');
+            const kind = btn.dataset.tab;
+            lists.forEach((ul) => ul.classList.toggle('hidden', ul.dataset.kind !== kind));
+          }),
+        );
+        document.addEventListener('click', (e) => {
+          const copyBtn = e.target.closest('.copy-btn');
+          if (!copyBtn) return;
+          const codeEl = copyBtn.previousElementSibling;
+          if (!codeEl) return;
+          navigator.clipboard.writeText(codeEl.textContent.trim());
+          const old = copyBtn.textContent;
+          copyBtn.textContent = 'Copied!';
+          setTimeout(() => (copyBtn.textContent = old), 900);
+        });
+        const copyVisible = document.getElementById('copyVisible');
+        if (copyVisible) {
+          copyVisible.addEventListener('click', () => {
+            const text = [...document.querySelectorAll('.ex-list:not(.hidden) code')]
+              .map((c) => c.textContent.trim())
+              .join('');
+            navigator.clipboard.writeText(text);
+            const old = copyVisible.textContent;
+            copyVisible.textContent = 'Copied list!';
+            setTimeout(() => (copyVisible.textContent = old), 900);
+          });
+        }
+      })();
+    </script>
+    <script>
+      const GH_URL = 'https://github.com/mc-es';
+      const LI_URL = 'https://linkedin.com/in/mc-es';
+      const gh = document.getElementById('gh');
+      const li = document.getElementById('li');
+      if (gh && GH_URL) gh.href = GH_URL;
+      if (li && LI_URL) li.href = LI_URL;
+    </script>
+    <script>
+      const toTopFab = document.getElementById('toTopFab');
+      let showAt = Math.round(window.innerHeight * 0.6);
+
+      function toggleFab() {
+        if (window.scrollY > showAt) {
+          toTopFab.classList.add('show');
+        } else {
+          toTopFab.classList.remove('show');
+        }
+      }
+
+      window.addEventListener('scroll', toggleFab, { passive: true });
+      window.addEventListener('resize', () => {
+        showAt = Math.round(window.innerHeight * 0.6);
+        toggleFab();
+      });
+      toTopFab.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      toggleFab();
+    </script>
+  </body>
+</html>

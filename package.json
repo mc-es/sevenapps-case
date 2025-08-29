@@ -9,8 +9,12 @@
     "prebuild": "expo prebuild",
     "format:eslint": "eslint .",
     "format:prettier": "prettier . --write",
+    "check:deps": "expo install --check",
+    "check:expo": "npx expo-doctor@latest .",
+    "check:ts": "tsc",
     "web": "expo start --web",
-    "generate-schema": "drizzle-kit generate"
+    "generate-schema": "drizzle-kit generate",
+    "prepare": "husky"
   },
   "dependencies": {
     "@expo/vector-icons": "~14.0.4",
@@ -39,16 +43,22 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@eslint/js": "^9.34.0",
+    "@google/generative-ai": "^0.24.1",
     "@types/react": "~18.3.12",
     "drizzle-kit": "^0.31.0",
     "eslint": "^9.34.0",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.3.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.5",
     "prettier": "^3.2.5",
     "prettier-plugin-organize-imports": "^4.2.0",
     "prettier-plugin-tailwindcss": "^0.5.11",
     "tailwindcss": "^3.4.0",
+    "tsx": "^4.20.5",
     "typescript": "~5.3.3",
     "typescript-eslint": "^8.41.0"
   },
