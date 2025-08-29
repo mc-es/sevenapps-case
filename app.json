@@ -31,7 +31,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "package": "com.mces.sevenappsreactnativecasestudy"
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "38f43720-ab5d-4433-bddb-d346f8fea2c6"
       }
-    }
+    },
+    "owner": "mc-es"
   }
 }
