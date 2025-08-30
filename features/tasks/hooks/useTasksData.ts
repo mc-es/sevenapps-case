@@ -1,3 +1,5 @@
+// useTasksData.ts
+import { error as hError, success as hSuccess, warn as hWarn } from '@/libs/feedback';
 import { tasksKeys } from '@/queries/keys';
 import {
   createTask,
@@ -106,11 +108,16 @@ export default function useTasksData({
           : t,
       );
       qc.setQueryData(key, next);
-      return { prev };
+      return { prev, nextCompleted };
     },
-    onError: (_e, _v, ctx) => {
+    onError: async (_e, _v, ctx) => {
       if (ctx?.prev) qc.setQueryData(key, ctx.prev);
+      await hError();
       Alert.alert('Hata', 'Görev durumu güncellenemedi.');
+    },
+    onSuccess: async (_data, _vars, ctx) => {
+      if (ctx?.nextCompleted) await hSuccess();
+      else await hWarn();
     },
     onSettled: () => qc.invalidateQueries({ queryKey: key }),
   });
@@ -142,9 +149,13 @@ export default function useTasksData({
       qc.setQueryData(key, [...prev, optimistic]);
       return { prev };
     },
-    onError: (_e, _v, ctx) => {
+    onError: async (_e, _v, ctx) => {
       if (ctx?.prev) qc.setQueryData(key, ctx.prev);
+      await hError();
       Alert.alert('Hata', 'Görev ekleme başarısız oldu.');
+    },
+    onSuccess: async () => {
+      await hSuccess();
     },
     onSettled: () => qc.invalidateQueries({ queryKey: key }),
   });
@@ -173,9 +184,13 @@ export default function useTasksData({
       qc.setQueryData(key, next);
       return { prev };
     },
-    onError: (_e, _v, ctx) => {
+    onError: async (_e, _v, ctx) => {
       if (ctx?.prev) qc.setQueryData(key, ctx.prev);
+      await hError();
       Alert.alert('Hata', 'Görev güncellenemedi.');
+    },
+    onSuccess: async () => {
+      await hSuccess();
     },
     onSettled: () => qc.invalidateQueries({ queryKey: key }),
   });
@@ -191,9 +206,13 @@ export default function useTasksData({
       );
       return { prev };
     },
-    onError: (_e, _v, ctx) => {
+    onError: async (_e, _v, ctx) => {
       if (ctx?.prev) qc.setQueryData(key, ctx.prev);
+      await hError();
       Alert.alert('Hata', 'Silme işlemi başarısız oldu.');
+    },
+    onSuccess: async () => {
+      await hSuccess();
     },
     onSettled: () => qc.invalidateQueries({ queryKey: key }),
   });
