@@ -1,5 +1,6 @@
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useTranslation } from 'react-i18next';
 import { Dimensions, Text, View } from 'react-native';
 
 import BackgroundGradient from '@/components/BackgroundGradient';
@@ -12,65 +13,70 @@ import HeroCard from '../components/HeroCard';
 
 const { width, height } = Dimensions.get('window');
 
-const LandingScreen = () => (
-  <Container className={styles.root}>
-    <StatusBar style="light" translucent backgroundColor="transparent" />
-    <BackgroundGradient />
-    <AnimatedBlob
-      size={260}
-      colors={['#93c5fd', '#a78bfa'] as const}
-      initial={{ top: 60, left: -40 }}
-      drift={{ x: 35, y: 22 }}
-    />
-    <AnimatedBlob
-      size={220}
-      colors={['#34d399', '#60a5fa'] as const}
-      initial={{ top: height * 0.35, left: width * 0.6 }}
-      drift={{ x: 28, y: 18 }}
-      delay={800}
-    />
-    <AnimatedBlob
-      size={260}
-      colors={['#f472b6', '#fb7185'] as const}
-      initial={{ top: height * 0.62, left: -20 }}
-      drift={{ x: 30, y: 25 }}
-      delay={1400}
-    />
-    <View className={styles.centerWrap}>
-      <HeroCard
-        title="Seven TODO"
-        subtitle="Zihnini boşalt, odaklan. Görevlerini akıcı bir deneyimle yönet."
+const LandingScreen = () => {
+  const { t } = useTranslation();
+
+  return (
+    <Container className={styles.root}>
+      <StatusBar style="light" translucent backgroundColor="transparent" />
+      <BackgroundGradient />
+      <AnimatedBlob
+        size={260}
+        colors={['#93c5fd', '#a78bfa'] as const}
+        initial={{ top: 60, left: -40 }}
+        drift={{ x: 35, y: 22 }}
       />
-      <View className={styles.floatingWrap}>
-        <Floating>
-          <View className={styles.floatingRow}>
-            <View className={styles.boxDone}>
-              <Text className={styles.checkText}>✓</Text>
+      <AnimatedBlob
+        size={220}
+        colors={['#34d399', '#60a5fa'] as const}
+        initial={{ top: height * 0.35, left: width * 0.6 }}
+        drift={{ x: 28, y: 18 }}
+        delay={800}
+      />
+      <AnimatedBlob
+        size={260}
+        colors={['#f472b6', '#fb7185'] as const}
+        initial={{ top: height * 0.62, left: -20 }}
+        drift={{ x: 30, y: 25 }}
+        delay={1400}
+      />
+      <View className={styles.centerWrap}>
+        <HeroCard
+          title="Seven TODO"
+          subtitle={t('landing.title')}
+          badges={[t('landing.badges.fast'), t('landing.badges.basic'), t('landing.badges.fluent')]}
+        />
+        <View className={styles.floatingWrap}>
+          <Floating>
+            <View className={styles.floatingRow}>
+              <View className={styles.boxDone}>
+                <Text className={styles.checkText}>✓</Text>
+              </View>
+              <Text className={styles.itemText}>{t('landing.checkBoxList.shopping')}</Text>
             </View>
-            <Text className={styles.itemText}>Alışveriş listesi</Text>
-          </View>
-        </Floating>
-        <Floating delay={220}>
-          <View className={styles.floatingRow}>
-            <View className={styles.boxEmpty} />
-            <Text className={styles.itemText}>Toplantı notları</Text>
-          </View>
-        </Floating>
-        <Floating delay={440}>
-          <View className={styles.floatingRow}>
-            <View className={styles.boxEmpty} />
-            <Text className={styles.itemText}>Antrenman planı</Text>
-          </View>
-        </Floating>
+          </Floating>
+          <Floating delay={220}>
+            <View className={styles.floatingRow}>
+              <View className={styles.boxEmpty} />
+              <Text className={styles.itemText}>{t('landing.checkBoxList.meetingNotes')}</Text>
+            </View>
+          </Floating>
+          <Floating delay={440}>
+            <View className={styles.floatingRow}>
+              <View className={styles.boxEmpty} />
+              <Text className={styles.itemText}>{t('landing.checkBoxList.trainingPlan')}</Text>
+            </View>
+          </Floating>
+        </View>
       </View>
-    </View>
-    <CTA
-      title="Listelerime Git"
-      subtitle="Saniyeler içinde liste oluştur, görevlere başla."
-      onPress={() => router.push('/lists')}
-    />
-  </Container>
-);
+      <CTA
+        title={t('landing.cta.btnText')}
+        subtitle={t('landing.cta.mutedText')}
+        onPress={() => router.push('/lists')}
+      />
+    </Container>
+  );
+};
 
 export default LandingScreen;
 

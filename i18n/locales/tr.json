@@ -1,0 +1,19 @@
+{
+  "landing": {
+    "title": "Zihnini boşalt, odaklan. Görevlerini akıcı bir deneyimle yönet.",
+    "badges": {
+      "fast": "Hızlı",
+      "basic": "Basit",
+      "fluent": "Akıcı"
+    },
+    "checkBoxList": {
+      "shopping": "Alışveriş Listesi",
+      "meetingNotes": "Toplantı Notları",
+      "trainingPlan": "Antrenman Planı"
+    },
+    "cta": {
+      "btnText": "Listelerime Git",
+      "mutedText": "Saniyeler içinde liste oluştur, görevlere başla."
+    }
+  }
+}

@@ -8,7 +8,7 @@ import usePulse from '../hooks/usePulse';
 interface HeroCardProps {
   title: string;
   subtitle: string;
-  badges?: string[];
+  badges: string[];
   iconName?: ComponentProps<typeof Ionicons>['name'];
   iconColor?: string;
   iconSize?: number;
@@ -26,7 +26,7 @@ interface HeroCardProps {
 const HeroCard = ({
   title,
   subtitle,
-  badges = ['Hızlı', 'Basit', 'Akıcı'],
+  badges,
   iconName = 'checkmark-done-circle',
   iconColor = '#10b981',
   iconSize = 84,

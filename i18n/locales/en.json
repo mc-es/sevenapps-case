@@ -1,0 +1,19 @@
+{
+  "landing": {
+    "title": "Empty your mind, focus. Manage your duties with a fluent experience.",
+    "badges": {
+      "fast": "Fast",
+      "basic": "Basic",
+      "fluent": "Fluent"
+    },
+    "checkBoxList": {
+      "shopping": "Shopping List",
+      "meetingNotes": "Meeting Notes",
+      "trainingPlan": "Training Plan"
+    },
+    "cta": {
+      "btnText": "Go to my Lists",
+      "mutedText": "Create a list in seconds, start tasks."
+    }
+  }
+}
