@@ -42,9 +42,6 @@ export default defineConfig([
   },
   {
     rules: {
-      'react/react-in-jsx-scope': 'off',
-      'react/display-name': 'off',
-
       //- TypeScript specific rules
       '@typescript-eslint/consistent-type-exports': 'error',
       '@typescript-eslint/consistent-type-imports': 'error',
@@ -74,7 +71,6 @@ export default defineConfig([
       'func-name-matching': ['error', 'never'],
       'func-names': ['error', 'as-needed'],
       'guard-for-in': 'error',
-      'id-length': ['error', { exceptions: ['x', 'y', 'z', 'i', 't'], max: 30, min: 2 }],
       'logical-assignment-operators': ['error', 'always'],
       'no-alert': 'error',
       'no-array-constructor': 'error',
@@ -129,6 +125,15 @@ export default defineConfig([
       'use-isnan': 'error',
       'valid-typeof': 'error',
       yoda: 'error',
+    },
+  },
+  {
+    files: ['**/*.{jsx,tsx}'],
+    rules: {
+      'react/react-in-jsx-scope': 'off',
+      'react/display-name': 'off',
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      '@typescript-eslint/explicit-function-return-type': 'off',
     },
   },
 ]);
