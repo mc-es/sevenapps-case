@@ -1,9 +1,18 @@
+import ConfirmGlassDialog from '@/components/ConfirmGlassDialog';
+import Container from '@/components/Container';
+
+import BackgroundGradient from '@/components/BackgroundGradient';
+import useDebouncedValue from '@/hooks/useDebouncedValue';
+import { listsKeys } from '@/queries/keys';
+import { getListById } from '@/queries/lists';
+import type { Priority, TaskItem } from '@/types/tasks';
 import { useQuery } from '@tanstack/react-query';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { StatusBar } from 'expo-status-bar';
+import { useCallback, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   FlatList,
   Pressable,
   RefreshControl,
@@ -11,21 +20,14 @@ import {
   TextInput,
   View,
 } from 'react-native';
-
-import Container from '@/components/Container';
-import useDebouncedValue from '@/hooks/useDebouncedValue';
-import { listsKeys } from '@/queries/keys';
-import { getListById } from '@/queries/lists';
-import type { Priority, Status, TaskItem } from '@/types/tasks';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import TaskCard from '../components/TaskCard';
 import TaskFormModal from '../components/TaskFormModal';
 import useTasksData from '../hooks/useTasksData';
 
 const Tabs = ['all', 'upcoming', 'completed'] as const;
-const Statuses: Status[] = ['not_started', 'in_progress', 'completed'];
 const Priorities: Priority[] = ['low', 'medium', 'high'];
 
-// nested ternary yerine map kullan
 const tabLabels: Record<(typeof Tabs)[number], string> = {
   all: 'Tümü',
   upcoming: 'Yaklaşan',
@@ -33,6 +35,7 @@ const tabLabels: Record<(typeof Tabs)[number], string> = {
 };
 
 const TasksScreen = () => {
+  const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const listId = Number(id);
   const validListId = Number.isFinite(listId);
@@ -48,12 +51,11 @@ const TasksScreen = () => {
   const debounced = useDebouncedValue(search, 400);
 
   const [tab, setTab] = useState<'all' | 'upcoming' | 'completed'>('all');
-  const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [priorityFilter, setPriorityFilter] = useState<Priority | null>(null);
 
   const {
-    displayTasks,
-    completedCount,
+    displayTasks, // hook’un verdiği temel liste
+    completedCount, // tamamlanan sayısı (tüm listeye göre)
     isAnyLoading,
     isAnyError,
     isRefetching,
@@ -65,14 +67,41 @@ const TasksScreen = () => {
   } = useTasksData({
     listId,
     search: debounced,
-    tab,
-    statusFilter,
-    priorityFilter,
+    tab, // hook desteklemese bile aşağıda güvenli client-side filtre var
+    statusFilter: null, // status filtrelerini kaldırdık
+    priorityFilter, // sadece öncelik filtresi
   });
+
+  // Sekme davranışını garantiye almak için client-side filtre:
+  const tasksForRender = useMemo(() => {
+    let arr = [...displayTasks];
+
+    // priority filtresi
+    if (priorityFilter)
+      arr = arr.filter((t) => (t.priority as Priority | undefined) === priorityFilter);
+
+    const nowIso = new Date().toISOString();
+
+    if (tab === 'upcoming') {
+      // due_date > now && !is_completed
+      arr = arr.filter((t) => !!t.due_date && t.due_date > nowIso && !t.is_completed);
+      // yaklaşanları yakın tarihten uzağa doğru göstermek istersen:
+      arr.sort((a, b) => (a.due_date! > b.due_date! ? 1 : -1));
+    } else if (tab === 'completed') {
+      arr = arr.filter((t) => !!t.is_completed);
+      // en son tamamlananlar üstte:
+      arr.sort((a, b) => (b.updated_at ?? '').localeCompare(a.updated_at ?? ''));
+    }
+    // tab === 'all' ise dokunma
+    return arr;
+  }, [displayTasks, priorityFilter, tab]);
 
   const [createVisible, setCreateVisible] = useState(false);
   const [editVisible, setEditVisible] = useState(false);
   const [editing, setEditing] = useState<TaskItem | null>(null);
+
+  const [confirmVisible, setConfirmVisible] = useState(false);
+  const [toDeleteId, setToDeleteId] = useState<number | null>(null);
 
   const openEdit = useCallback((t: TaskItem) => {
     setEditing(t);
@@ -95,7 +124,7 @@ const TasksScreen = () => {
   if (!validListId) {
     return (
       <View className={styles.centerPad}>
-        <Text>Geçersiz id</Text>
+        <Text className="text-white">Geçersiz id</Text>
       </View>
     );
   }
@@ -105,7 +134,7 @@ const TasksScreen = () => {
   if (isAnyLoading && displayTasks.length === 0) {
     content = (
       <View className={styles.center}>
-        <ActivityIndicator />
+        <ActivityIndicator color="#fff" />
         <Text className={styles.centerTextGap}>Görevler yükleniyor…</Text>
       </View>
     );
@@ -113,26 +142,33 @@ const TasksScreen = () => {
     content = (
       <View className={styles.centerPad}>
         <Text className={styles.errorTitle}>Bir hata oluştu</Text>
-        <Pressable onPress={refetchAll}>
-          <Text className={styles.retryBtnText}>Tekrar dene</Text>
+        <Pressable onPress={refetchAll} className={styles.retryWrap}>
+          <LinearGradient
+            colors={['#111827', '#0b1220'] as const}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            className={styles.retryBtn}
+          >
+            <Text className={styles.retryText}>Tekrar dene</Text>
+          </LinearGradient>
         </Pressable>
       </View>
     );
   } else {
     content = (
       <>
-        <View className={styles.headerWrap}>
+        {/* Header */}
+        <View style={{ paddingTop: insets.top + 10 }} className={styles.headerWrap}>
           <Text className={styles.listTitle}>{listQ.data?.name ?? 'Liste'}</Text>
+
+          {/* Tabs */}
           <View className={styles.pillsRow}>
             {Tabs.map((t) => (
-              <Pill
-                key={t}
-                label={tabLabels[t]} // burada artık nested ternary yok
-                active={tab === t}
-                onPress={() => setTab(t)}
-              />
+              <Pill key={t} label={tabLabels[t]} active={tab === t} onPress={() => setTab(t)} />
             ))}
           </View>
+
+          {/* Search */}
           <View>
             <Text className={styles.searchLabel}>Ara</Text>
             <TextInput
@@ -140,22 +176,14 @@ const TasksScreen = () => {
               onChangeText={setSearch}
               placeholder="Görevlerde ara…"
               className={styles.searchInput}
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor="rgba(229,231,235,0.7)"
               returnKeyType="search"
             />
           </View>
         </View>
+
+        {/* Filters (sadece öncelik) */}
         <View className={styles.filtersWrap}>
-          <View className={styles.pillsRow}>
-            {Statuses.map((s) => (
-              <Pill
-                key={s}
-                label={`durum: ${s}`}
-                active={statusFilter === s}
-                onPress={() => setStatusFilter(statusFilter === s ? null : s)}
-              />
-            ))}
-          </View>
           <View className={styles.pillsRow}>
             {Priorities.map((p) => (
               <Pill
@@ -167,40 +195,51 @@ const TasksScreen = () => {
             ))}
           </View>
         </View>
+
+        {/* List */}
         <FlatList
-          data={displayTasks}
+          data={tasksForRender}
           keyExtractor={(item) => String(item.id)}
-          refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetchAll} />}
+          refreshControl={
+            <RefreshControl tintColor="#fff" refreshing={isRefetching} onRefresh={refetchAll} />
+          }
           contentContainerStyle={styles.listContentPad}
           ListHeaderComponent={
             <View className={styles.listTopRow}>
-              <Text className="font-bold">
-                Görevler • Tamamlanan: {completedCount}/{displayTasks.length}
+              <Text className="font-bold text-white">
+                Görevler • Tamamlanan: {completedCount}/{tasksForRender.length}
               </Text>
               <Pressable
                 onPress={() => setCreateVisible(true)}
-                className={styles.addBtn}
+                className={styles.addBtnWrap}
                 style={({ pressed }) => [{ opacity: pressed ? 0.95 : 1 }]}
               >
-                <Text className={styles.addBtnText}>+ Görev Ekle</Text>
+                <LinearGradient
+                  colors={['#111827', '#0b1220'] as const}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  className={styles.addBtn}
+                >
+                  <Text className={styles.addBtnText}>+ Görev Ekle</Text>
+                </LinearGradient>
               </Pressable>
             </View>
           }
-          ListEmptyComponent={<Text>Görev bulunamadı.</Text>}
+          ListEmptyComponent={<Text className="text-white/80">Görev bulunamadı.</Text>}
           renderItem={({ item }) => (
             <TaskCard
               item={item}
               onToggle={toggleTask}
               onEdit={openEdit}
-              onDelete={(taskId) =>
-                Alert.alert('Görevi sil', 'Bu görev kalıcı olarak silinecek. Emin misin?', [
-                  { text: 'Vazgeç', style: 'cancel' },
-                  { text: 'Sil', style: 'destructive', onPress: () => deleteTask(taskId) },
-                ])
-              }
+              onDelete={(taskId) => {
+                setToDeleteId(taskId);
+                setConfirmVisible(true);
+              }}
             />
           )}
         />
+
+        {/* Create & Edit */}
         <TaskFormModal
           visible={createVisible}
           mode="create"
@@ -221,36 +260,61 @@ const TasksScreen = () => {
             editTask({ id: editing.id, ...p });
           }}
         />
+
+        {/* Delete confirm */}
+        <ConfirmGlassDialog
+          visible={confirmVisible}
+          title="Bu görev silinecek"
+          message="Bu işlem geri alınamaz."
+          confirmText="Sil"
+          destructive
+          onCancel={() => setConfirmVisible(false)}
+          onConfirm={() => {
+            if (toDeleteId !== null) deleteTask(toDeleteId);
+          }}
+        />
       </>
     );
   }
 
-  return <Container className={styles.root}>{content}</Container>;
+  return (
+    <Container className={styles.root}>
+      <StatusBar style="light" translucent backgroundColor="transparent" />
+      <BackgroundGradient />
+      {content}
+    </Container>
+  );
 };
 
 export default TasksScreen;
 
 const styles = {
-  root: 'bg-white',
+  root: 'flex-1 bg-transparent',
   center: 'flex-1 items-center justify-center',
-  centerTextGap: 'mt-2',
+  centerTextGap: 'mt-2 text-white/80',
   centerPad: 'flex-1 items-center justify-center p-4',
-  errorTitle: 'mb-2 text-base font-semibold',
-  retryBtnText: 'mt-3 text-blue-500',
+  errorTitle: 'mb-2 text-base font-semibold text-white',
+  retryWrap: 'rounded-2xl overflow-hidden',
+  retryBtn: 'px-4 py-3 items-center',
+  retryText: 'text-white font-bold',
+
   headerWrap: 'px-4 pt-4',
-  listTitle: 'mb-2 text-lg font-extrabold',
+  listTitle: 'mb-2 text-lg font-extrabold text-white',
   pillsRow: 'mb-2 flex-row',
   pill: 'mr-2 rounded-xl border px-3 py-2',
-  pillActive: 'border-blue-500',
-  pillInactive: 'border-black/15',
-  pillTextActive: 'font-extrabold text-blue-500',
-  pillTextInactive: 'font-semibold',
-  searchWrap: 'px-4',
-  searchLabel: 'mb-1 font-semibold',
-  searchInput: 'mb-2 rounded-xl border border-black/10 bg-white px-3 py-2',
+  pillActive: 'border-emerald-400 bg-emerald-500/10',
+  pillInactive: 'border-white/25 bg-white/10',
+  pillTextActive: 'font-extrabold text-emerald-300',
+  pillTextInactive: 'font-semibold text-white',
+
+  searchLabel: 'mb-1 font-semibold text-white',
+  searchInput: 'mb-2 rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-white',
+
   filtersWrap: 'mb-2 px-4',
-  listContentPad: { padding: 16 },
+
+  listContentPad: { padding: 16 } as const,
   listTopRow: 'mb-3 flex-row items-center justify-between',
-  addBtn: 'rounded-xl border border-black/15 bg-white px-3 py-2',
-  addBtnText: 'font-semibold',
+  addBtnWrap: 'rounded-2xl overflow-hidden',
+  addBtn: 'px-4 py-3 items-center justify-center',
+  addBtnText: 'font-semibold text-white',
 } as const;

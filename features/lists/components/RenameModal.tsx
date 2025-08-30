@@ -1,4 +1,6 @@
 import { cn } from '@/libs/cn';
+import { BlurView } from 'expo-blur';
+import { LinearGradient } from 'expo-linear-gradient';
 import { memo, useCallback, useMemo } from 'react';
 import type { GestureResponderEvent } from 'react-native';
 import {
@@ -6,6 +8,7 @@ import {
   Modal,
   Platform,
   Pressable,
+  StyleSheet,
   Text,
   TextInput,
   View,
@@ -68,35 +71,51 @@ const RenameModal = ({
         behavior={Platform.select({ ios: 'padding', android: 'height' })}
         className={cn(styles.backdrop, containerClassName)}
       >
+        <BlurView intensity={100} tint="dark" style={styles.blurOverlay} />
         <Pressable onPress={handleBackdropPress} className="flex-1" />
-        <Pressable onPress={stopPropagation} className={cn(styles.card, contentClassName)}>
-          <Text className={styles.title}>{title}</Text>
-          <TextInput
-            value={value}
-            onChangeText={onChangeText}
-            placeholder={placeholder}
-            autoFocus
-            autoCapitalize="none"
-            autoCorrect={false}
-            returnKeyType="done"
-            onSubmitEditing={handleSave}
-            className={cn(styles.input, inputClassName)}
-            placeholderTextColor="#9ca3af"
-          />
-          <View className={cn(styles.actions, actionsClassName)}>
-            <Pressable accessibilityRole="button" accessibilityLabel="Vazgeç" onPress={onCancel}>
-              <Text className={styles.cancel}>Vazgeç</Text>
-            </Pressable>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Kaydet"
-              onPress={handleSave}
-              disabled={!canSave}
-              style={({ pressed }) => [{ opacity: pressed ? 0.9 : 1 }]}
-            >
-              <Text className={cn(styles.save, !canSave && styles.saveDisabled)}>Kaydet</Text>
-            </Pressable>
-          </View>
+        <Pressable onPress={stopPropagation} className="px-6">
+          <BlurView intensity={50} tint="light" className={cn(styles.card, contentClassName)}>
+            <View className="rounded-2xl border border-white/20 bg-white/10 p-4">
+              <Text className={styles.title}>{title}</Text>
+              <TextInput
+                value={value}
+                onChangeText={onChangeText}
+                placeholder={placeholder}
+                autoFocus
+                autoCapitalize="none"
+                autoCorrect={false}
+                returnKeyType="done"
+                onSubmitEditing={handleSave}
+                className={cn(styles.input, inputClassName)}
+                placeholderTextColor="rgba(255,255,255,0.6)"
+              />
+              <View className={cn(styles.actions, actionsClassName)}>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="Vazgeç"
+                  onPress={onCancel}
+                >
+                  <Text className={styles.cancel}>Vazgeç</Text>
+                </Pressable>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="Kaydet"
+                  onPress={handleSave}
+                  disabled={!canSave}
+                  className={cn(styles.saveBtnWrapper, !canSave && 'opacity-70')}
+                >
+                  <LinearGradient
+                    colors={['#111827', '#0b1220'] as const}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    className={styles.saveBtn}
+                  >
+                    <Text className={styles.saveText}>Kaydet</Text>
+                  </LinearGradient>
+                </Pressable>
+              </View>
+            </View>
+          </BlurView>
         </Pressable>
         <Pressable onPress={handleBackdropPress} className="flex-1" />
       </KeyboardAvoidingView>
@@ -107,12 +126,14 @@ const RenameModal = ({
 export default memo(RenameModal);
 
 const styles = {
-  backdrop: 'flex-1 justify-center bg-black/40 p-6',
-  card: 'rounded-xl bg-white p-4',
-  title: 'mb-2 text-base font-bold',
-  input: 'mb-3 rounded-lg border border-black/10 px-3 py-2',
-  actions: 'flex-row justify-end gap-4',
-  cancel: '',
-  save: 'font-bold text-blue-500',
-  saveDisabled: 'text-blue-300',
+  backdrop: 'flex-1 justify-center bg-black/60',
+  blurOverlay: { ...StyleSheet.absoluteFillObject },
+  card: 'rounded-2xl overflow-hidden',
+  title: 'mb-2 text-base font-bold text-white',
+  input: 'mb-3 rounded-xl border border-white/20 px-3 py-2 text-white bg-white/10',
+  actions: 'flex-row justify-end gap-4 mt-1',
+  cancel: 'text-white/80',
+  saveBtnWrapper: 'rounded-2xl overflow-hidden',
+  saveBtn: 'px-4 py-2 items-center justify-center',
+  saveText: 'font-bold text-white',
 } as const;

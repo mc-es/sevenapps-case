@@ -2,9 +2,10 @@ import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Dimensions, Text, View } from 'react-native';
 
+import BackgroundGradient from '@/components/BackgroundGradient';
 import Container from '@/components/Container';
+
 import AnimatedBlob from '../components/AnimatedBlob';
-import BackgroundGradient from '../components/BackgroundGradient';
 import CTA from '../components/CTA';
 import Floating from '../components/Floating';
 import HeroCard from '../components/HeroCard';
