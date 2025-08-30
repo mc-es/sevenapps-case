@@ -1,1 +1,1 @@
-export { ListsScreen as default } from '@/features/lists';
+export { Landing as default } from '@/features/landing';

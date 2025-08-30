@@ -9,12 +9,9 @@ export default function Layout() {
   return (
     <ReactQueryProvider>
       <DatabaseProvider>
-        <Stack
-          screenOptions={{
-            headerTitleAlign: 'center',
-          }}
-        >
-          <Stack.Screen name="index" options={{ title: 'Listeler' }} />
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" options={{ title: 'Landing' }} />
+          <Stack.Screen name="lists" options={{ title: 'Listeler' }} />
           <Stack.Screen name="details" options={{ title: 'Liste Detayı' }} />
         </Stack>
       </DatabaseProvider>
