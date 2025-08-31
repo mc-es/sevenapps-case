@@ -1,9 +1,12 @@
 import * as Haptics from 'expo-haptics';
-export const success = (): Promise<void> =>
+
+const success = (): Promise<void> =>
   Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
-export const warn = (): Promise<void> =>
+const warn = (): Promise<void> =>
   Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
 
-export const error = (): Promise<void> =>
+const error = (): Promise<void> =>
   Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+
+export { error, success, warn };

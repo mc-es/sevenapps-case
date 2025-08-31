@@ -9,6 +9,8 @@ focusManager.setEventListener((handleFocus) => {
   return () => sub.remove();
 });
 
-export function ReactQueryProvider({ children }: PropsWithChildren) {
+const ReactQueryProvider = ({ children }: PropsWithChildren) => {
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
-}
+};
+
+export { ReactQueryProvider };

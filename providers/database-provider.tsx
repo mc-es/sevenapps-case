@@ -1,17 +1,12 @@
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { SQLiteProvider } from 'expo-sqlite';
-import { Suspense } from 'react';
+import { PropsWithChildren, Suspense } from 'react';
 import { ActivityIndicator } from 'react-native';
 
+import { DATABASE_NAME, db } from '@/db';
 import migrations from '../drizzle/migrations';
 
-import { DATABASE_NAME, db } from '@/db';
-
-interface DatabaseProviderProps {
-  children: React.ReactNode;
-}
-
-export default function DatabaseProvider(props: DatabaseProviderProps) {
+const DatabaseProvider = ({ children }: PropsWithChildren) => {
   const { success, error } = useMigrations(db, migrations);
 
   return (
@@ -21,8 +16,10 @@ export default function DatabaseProvider(props: DatabaseProviderProps) {
         options={{ enableChangeListener: true }}
         useSuspense
       >
-        {props.children}
+        {children}
       </SQLiteProvider>
     </Suspense>
   );
-}
+};
+
+export { DatabaseProvider };

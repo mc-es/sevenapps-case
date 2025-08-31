@@ -2,8 +2,8 @@ import '../global.css';
 
 import { Stack } from 'expo-router';
 
-import DatabaseProvider from '@/providers/database-provider';
-import I18nProvider from '@/providers/i18n-provider';
+import { DatabaseProvider } from '@/providers/database-provider';
+import { I18nProvider } from '@/providers/i18n-provider';
 import { ReactQueryProvider } from '@/providers/react-query';
 
 export default function Layout() {
