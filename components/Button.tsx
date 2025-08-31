@@ -1,6 +1,7 @@
 import { cn } from '@/libs/cn';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { memo } from 'react';
+import type { GestureResponderEvent } from 'react-native';
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 
 type ColorTuple = readonly [string, string, ...string[]];
@@ -10,7 +11,7 @@ type Size = 'sm' | 'md' | 'lg';
 
 interface ButtonProps {
   title: string;
-  onPress?: () => void;
+  onPress?: (e?: GestureResponderEvent) => void;
   variant?: Variant;
   size?: Size;
   disabled?: boolean;
@@ -66,7 +67,7 @@ const Button = ({
     accessibilityLabel: accessibilityLabel ?? title,
     disabled: disabled || loading,
     style: ({ pressed }: { pressed: boolean }) => [{ opacity: pressed ? 0.96 : 1 }],
-    onPress,
+    onPress: (e: GestureResponderEvent) => onPress?.(e),
   };
 
   if (variant === 'solid') {

@@ -1,4 +1,30 @@
 {
+  "global": {
+    "creation": "Oluşturma",
+    "delete": "Sil",
+    "save": "Kaydet",
+    "cancel": "Vazgeç",
+    "add": "Ekle",
+    "rename": "Yeniden Adlandır",
+    "close": "Kapat"
+  },
+  "loading": {
+    "lists": "Listeler yükleniyor..."
+  },
+  "placeholder": {
+    "list": "Liste Ara",
+    "newName": "Yeni Ad"
+  },
+  "error": {
+    "message": "Bir hata oluştu...",
+    "tryAgain": "Tekrar dene"
+  },
+  "alert": {
+    "error": "Hata",
+    "failedAddingList": "Liste ekleme başarısız oldu.",
+    "failedRenamingList": "Yeniden adlandırma başarısız oldu.",
+    "failedDeletingList": "Silme işlemi başarısız oldu."
+  },
   "landing": {
     "title": "Zihnini boşalt, odaklan. Görevlerini akıcı bir deneyimle yönet.",
     "badges": {
@@ -15,5 +41,15 @@
       "btnText": "Listelerime Git",
       "mutedText": "Saniyeler içinde liste oluştur, görevlere başla."
     }
+  },
+  "lists": {
+    "title": "Listelerin",
+    "subTitle": "Hoş Geldin",
+    "createNewList": "Yeni Liste {{counter}}",
+    "recentListTitle": "Son Oluşturulanlar",
+    "noListMessage": "Hiç Liste Yok...",
+    "addToListBtn": "Liste Ekle",
+    "confirmDialogTitle": "Bu Liste Silinecek",
+    "confirmDialogMessage": "{{name}} kalıcı olarak silinecek."
   }
 }

@@ -1,7 +1,6 @@
-import { cn } from '@/libs/cn';
 import { BlurView } from 'expo-blur';
-import { LinearGradient } from 'expo-linear-gradient';
 import { memo, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { GestureResponderEvent } from 'react-native';
 import {
   KeyboardAvoidingView,
@@ -10,37 +9,53 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from 'react-native';
 
+import Button from '@/components/Button';
+import InputBox from '@/components/InputBox';
+
 type RenameModalProps = {
+  title: string;
+  placeholder: string;
   visible: boolean;
   value: string;
   onChangeText: (t: string) => void;
   onCancel: () => void;
   onSave: () => void;
-  title?: string;
-  placeholder?: string;
-  containerClassName?: string;
-  contentClassName?: string;
-  inputClassName?: string;
-  actionsClassName?: string;
+  backdropBlurIntensity?: number;
+  backdropBlurTint?: 'light' | 'dark' | 'default';
+  cardBlurIntensity?: number;
+  cardBlurTint?: 'light' | 'dark' | 'default';
 };
 
-const RenameModal = ({
-  visible,
-  value,
-  onChangeText,
-  onCancel,
-  onSave,
-  title = 'Yeniden adlandır',
-  placeholder = 'Yeni ad',
-  containerClassName,
-  contentClassName,
-  inputClassName,
-  actionsClassName,
-}: RenameModalProps) => {
+const defaults: Required<
+  Pick<
+    RenameModalProps,
+    'backdropBlurIntensity' | 'backdropBlurTint' | 'cardBlurIntensity' | 'cardBlurTint'
+  >
+> = {
+  backdropBlurIntensity: 100,
+  backdropBlurTint: 'dark',
+  cardBlurIntensity: 100,
+  cardBlurTint: 'dark',
+};
+
+const RenameModal = (props: RenameModalProps) => {
+  const {
+    title,
+    placeholder,
+    visible,
+    value,
+    onChangeText,
+    onCancel,
+    onSave,
+    backdropBlurIntensity,
+    backdropBlurTint,
+    cardBlurIntensity,
+    cardBlurTint,
+  } = { ...defaults, ...props };
+  const { t } = useTranslation();
   const canSave = useMemo(() => value.trim().length > 0, [value]);
 
   const handleBackdropPress = useCallback(() => {
@@ -69,15 +84,19 @@ const RenameModal = ({
     >
       <KeyboardAvoidingView
         behavior={Platform.select({ ios: 'padding', android: 'height' })}
-        className={cn(styles.backdrop, containerClassName)}
+        className={styles.backdrop}
       >
-        <BlurView intensity={100} tint="dark" style={styles.blurOverlay} />
+        <BlurView
+          intensity={backdropBlurIntensity}
+          tint={backdropBlurTint}
+          style={styles.blurOverlay}
+        />
         <Pressable onPress={handleBackdropPress} className="flex-1" />
         <Pressable onPress={stopPropagation} className="px-6">
-          <BlurView intensity={50} tint="light" className={cn(styles.card, contentClassName)}>
-            <View className="rounded-2xl border border-white/20 bg-white/10 p-4">
+          <BlurView intensity={cardBlurIntensity} tint={cardBlurTint} className={styles.card}>
+            <View className={styles.inlineCard}>
               <Text className={styles.title}>{title}</Text>
-              <TextInput
+              <InputBox
                 value={value}
                 onChangeText={onChangeText}
                 placeholder={placeholder}
@@ -86,33 +105,25 @@ const RenameModal = ({
                 autoCorrect={false}
                 returnKeyType="done"
                 onSubmitEditing={handleSave}
-                className={cn(styles.input, inputClassName)}
-                placeholderTextColor="rgba(255,255,255,0.6)"
+                variant="glass"
+                containerClassName="w-full"
+                inputClassName="mb-3"
               />
-              <View className={cn(styles.actions, actionsClassName)}>
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel="Vazgeç"
+              <View className={styles.actions}>
+                <Button
+                  title={t('global.cancel')}
+                  variant="solid"
                   onPress={onCancel}
-                >
-                  <Text className={styles.cancel}>Vazgeç</Text>
-                </Pressable>
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel="Kaydet"
+                  colors={['#374151', '#1f2937']}
+                  textClassName="text-gray-200"
+                />
+                <Button
+                  title={t('global.save')}
                   onPress={handleSave}
                   disabled={!canSave}
-                  className={cn(styles.saveBtnWrapper, !canSave && 'opacity-70')}
-                >
-                  <LinearGradient
-                    colors={['#111827', '#0b1220'] as const}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    className={styles.saveBtn}
-                  >
-                    <Text className={styles.saveText}>Kaydet</Text>
-                  </LinearGradient>
-                </Pressable>
+                  colors={['#10b981', '#059669']}
+                  textClassName="text-white font-semibold"
+                />
               </View>
             </View>
           </BlurView>
@@ -129,11 +140,7 @@ const styles = {
   backdrop: 'flex-1 justify-center bg-black/60',
   blurOverlay: { ...StyleSheet.absoluteFillObject },
   card: 'rounded-2xl overflow-hidden',
+  inlineCard: 'rounded-2xl border border-white/20 bg-white/20 p-4',
   title: 'mb-2 text-base font-bold text-white',
-  input: 'mb-3 rounded-xl border border-white/20 px-3 py-2 text-white bg-white/10',
   actions: 'flex-row justify-end gap-4 mt-1',
-  cancel: 'text-white/80',
-  saveBtnWrapper: 'rounded-2xl overflow-hidden',
-  saveBtn: 'px-4 py-2 items-center justify-center',
-  saveText: 'font-bold text-white',
 } as const;

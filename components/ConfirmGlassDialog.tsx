@@ -3,10 +3,10 @@ import { Modal, Pressable, Text, View } from 'react-native';
 
 type Props = {
   visible: boolean;
-  title?: string;
-  message?: string;
-  confirmText?: string;
-  cancelText?: string;
+  title: string;
+  message: string;
+  confirmText: string;
+  cancelText: string;
   onConfirm: () => void;
   onCancel: () => void;
   destructive?: boolean;
@@ -14,10 +14,10 @@ type Props = {
 
 const ConfirmGlassDialog = ({
   visible,
-  title = 'Emin misin?',
+  title,
   message,
-  confirmText = 'Onayla',
-  cancelText = 'Vazgeç',
+  confirmText,
+  cancelText,
   onConfirm,
   onCancel,
   destructive,

@@ -1,4 +1,30 @@
 {
+  "global": {
+    "creation": "Creation",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "add": "Add",
+    "rename": "Rename",
+    "close": "Close"
+  },
+  "loading": {
+    "lists": "List is loading..."
+  },
+  "placeholder": {
+    "list": "Search List",
+    "newName": "New Name"
+  },
+  "error": {
+    "message": "There was an error...",
+    "tryAgain": "Try again"
+  },
+  "alert": {
+    "error": "Error",
+    "failedAddingList": "Adding a list failed.",
+    "failedRenamingList": "Renaming the list failed.",
+    "failedDeletingList": "The process of deleting the list failed."
+  },
   "landing": {
     "title": "Empty your mind, focus. Manage your duties with a fluent experience.",
     "badges": {
@@ -15,5 +41,15 @@
       "btnText": "Go to my Lists",
       "mutedText": "Create a list in seconds, start tasks."
     }
+  },
+  "lists": {
+    "title": "Your Lists",
+    "subTitle": "Welcome Back",
+    "createNewList": "New List {{counter}}",
+    "recentListTitle": "Recently Created",
+    "noListMessage": "There is no list...",
+    "addToListBtn": "Add List",
+    "confirmDialogTitle": "This list will be deleted",
+    "confirmDialogMessage": "{{name}} will be permanently deleted."
   }
 }
