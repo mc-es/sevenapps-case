@@ -1,9 +1,9 @@
 import i18n, { setupI18n } from '@/i18n';
-import React, { useEffect, useState } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { ActivityIndicator, View } from 'react-native';
 
-export default function I18nProvider({ children }: { children: React.ReactNode }) {
+export default function I18nProvider({ children }: PropsWithChildren) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {

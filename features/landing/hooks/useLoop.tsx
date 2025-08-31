@@ -1,12 +1,30 @@
 import { useEffect, useRef } from 'react';
 import { Animated, Easing } from 'react-native';
 
-const useLoop = (duration = 2000, easing = Easing.inOut(Easing.quad)) => {
-  const v = useRef(new Animated.Value(0)).current;
+interface UseLoopProps {
+  duration?: number;
+  easing?: (value: number) => number;
+  delay?: number;
+  autoStart?: boolean;
+}
 
-  useEffect(() => {
-    const loop = Animated.loop(
-      Animated.timing(v, {
+const defaults: Required<UseLoopProps> = {
+  duration: 2000,
+  easing: Easing.inOut(Easing.quad),
+  delay: 0,
+  autoStart: true,
+};
+
+const useLoop = (props: UseLoopProps) => {
+  const { duration, easing, delay, autoStart } = { ...defaults, ...props };
+  const value = useRef(new Animated.Value(0)).current;
+  const loopRef = useRef<Animated.CompositeAnimation | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const start = () => {
+    value.setValue(0);
+    loopRef.current = Animated.loop(
+      Animated.timing(value, {
         toValue: 1,
         duration,
         easing,
@@ -14,11 +32,29 @@ const useLoop = (duration = 2000, easing = Easing.inOut(Easing.quad)) => {
         isInteraction: false,
       }),
     );
-    loop.start();
-    return () => loop.stop();
-  }, [v, duration, easing]);
+    loopRef.current.start();
+  };
 
-  return v;
+  const stop = () => {
+    loopRef.current?.stop?.();
+    loopRef.current = null;
+
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    if (autoStart) {
+      if (delay > 0) timeoutRef.current = setTimeout(start, delay);
+      else start();
+    }
+
+    return stop;
+  }, [duration, easing, delay, autoStart]);
+
+  return { value, start, stop };
 };
 
-export default useLoop;
+export { useLoop };

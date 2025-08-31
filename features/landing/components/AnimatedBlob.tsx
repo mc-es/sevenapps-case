@@ -1,61 +1,30 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { memo, useEffect, useRef } from 'react';
-import { Animated, Easing } from 'react-native';
+import { memo } from 'react';
+import { Animated } from 'react-native';
 
-type ColorTuple = readonly [string, string, ...string[]];
+import { useLoop } from '../hooks/useLoop';
 
-type AnimatedBlobProps = {
-  size?: number;
-  colors: ColorTuple;
+interface AnimatedBlobProps {
+  size: number;
+  colors: readonly [string, string, ...string[]];
   initial: { top: number; left: number };
   drift: { x: number; y: number };
   delay?: number;
   duration?: number;
+}
+
+const defaults: Required<Pick<AnimatedBlobProps, 'delay' | 'duration'>> = {
+  delay: 0,
+  duration: 6500,
 };
 
-const AnimatedBlob = ({
-  size = 220,
-  colors,
-  initial,
-  drift,
-  delay = 0,
-  duration = 6500,
-}: AnimatedBlobProps) => {
-  const v = useRef(new Animated.Value(0)).current;
-  const loopRef = useRef<Animated.CompositeAnimation | null>(null);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+const AnimatedBlob = (props: AnimatedBlobProps) => {
+  const { size, colors, initial, drift, delay, duration } = { ...defaults, ...props };
+  const { value } = useLoop({ duration, delay });
 
-  useEffect(() => {
-    const start = () => {
-      v.setValue(0);
-      loopRef.current = Animated.loop(
-        Animated.timing(v, {
-          toValue: 1,
-          duration,
-          easing: Easing.inOut(Easing.quad),
-          useNativeDriver: true,
-          isInteraction: false,
-        }),
-      );
-      loopRef.current.start();
-    };
-
-    if (delay > 0) timeoutRef.current = setTimeout(start, delay);
-    else start();
-
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
-      loopRef.current?.stop?.();
-      loopRef.current = null;
-    };
-  }, [delay, duration, v]);
-
-  const translateX = v.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0, drift.x, 0] });
-  const translateY = v.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0, -drift.y, 0] });
-  const opacity = v.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0.75, 1, 0.75] });
+  const translateX = value.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0, drift.x, 0] });
+  const translateY = value.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0, -drift.y, 0] });
+  const opacity = value.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0.75, 1, 0.75] });
 
   return (
     <Animated.View

@@ -1,12 +1,33 @@
+import { useMemo } from 'react';
 import { Easing } from 'react-native';
-import useLoop from './useLoop';
 
-const usePulse = ({ from = 0.94, to = 1.06, duration = 2000 }) => {
-  const v = useLoop(duration, Easing.inOut(Easing.quad));
-  const scale = v.interpolate({ inputRange: [0, 0.5, 1], outputRange: [from, to, from] });
-  const opacity = v.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0.9, 1, 0.9] });
+import { useLoop } from './useLoop';
 
-  return { scale, opacity };
+interface UsePulseProps {
+  from?: number;
+  to?: number;
+  duration?: number;
+}
+
+const defaults: Required<UsePulseProps> = {
+  from: 0.94,
+  to: 1.06,
+  duration: 2000,
 };
 
-export default usePulse;
+const usePulse = (props: UsePulseProps) => {
+  const { from, to, duration } = { ...defaults, ...props };
+  const { value } = useLoop({ duration, easing: Easing.inOut(Easing.quad) });
+
+  const ranges = useMemo(
+    () => ({
+      scale: value.interpolate({ inputRange: [0, 0.5, 1], outputRange: [from, to, from] }),
+      opacity: value.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0.9, 1, 0.9] }),
+    }),
+    [value, from, to],
+  );
+
+  return ranges;
+};
+
+export { usePulse };

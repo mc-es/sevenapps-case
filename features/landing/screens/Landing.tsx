@@ -1,7 +1,8 @@
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Text, View } from 'react-native';
+import { Text, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import BackgroundGradient from '@/components/BackgroundGradient';
 import Container from '@/components/Container';
@@ -11,31 +12,31 @@ import CTA from '../components/CTA';
 import Floating from '../components/Floating';
 import HeroCard from '../components/HeroCard';
 
-const { width, height } = Dimensions.get('window');
-
 const LandingScreen = () => {
   const { t } = useTranslation();
+  const { width, height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
 
   return (
-    <Container className={styles.root}>
+    <Container padding={{ bottom: insets.bottom + 15 }}>
       <StatusBar style="light" translucent backgroundColor="transparent" />
       <BackgroundGradient />
       <AnimatedBlob
         size={260}
-        colors={['#93c5fd', '#a78bfa'] as const}
+        colors={['#93c5fd', '#a78bfa']}
         initial={{ top: 60, left: -40 }}
         drift={{ x: 35, y: 22 }}
       />
       <AnimatedBlob
         size={220}
-        colors={['#34d399', '#60a5fa'] as const}
+        colors={['#34d399', '#60a5fa']}
         initial={{ top: height * 0.35, left: width * 0.6 }}
         drift={{ x: 28, y: 18 }}
         delay={800}
       />
       <AnimatedBlob
         size={260}
-        colors={['#f472b6', '#fb7185'] as const}
+        colors={['#f472b6', '#fb7185']}
         initial={{ top: height * 0.62, left: -20 }}
         drift={{ x: 30, y: 25 }}
         delay={1400}
@@ -81,7 +82,6 @@ const LandingScreen = () => {
 export default LandingScreen;
 
 const styles = {
-  root: 'min-h-full',
   centerWrap: 'flex-1 items-center justify-center px-6',
   floatingWrap: 'mt-8 w-full',
   floatingRow: 'mb-3 flex-row items-center',

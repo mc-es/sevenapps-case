@@ -1,64 +1,36 @@
-import React, { memo, useEffect, useRef } from 'react';
+import type { PropsWithChildren } from 'react';
+import { memo } from 'react';
 import { Animated, Easing } from 'react-native';
+
+import { useLoop } from '../hooks/useLoop';
 
 interface FloatingProps {
   delay?: number;
   distance?: number;
   duration?: number;
-  children: React.ReactNode;
-  className?: string;
 }
 
-const Floating = ({
-  delay = 0,
-  distance = 8,
-  duration = 1800,
-  children,
-  className,
-}: FloatingProps) => {
-  const v = useRef(new Animated.Value(0)).current;
-  const loopRef = useRef<Animated.CompositeAnimation | null>(null);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+const defaults: Required<FloatingProps> = {
+  delay: 0,
+  distance: 8,
+  duration: 1800,
+};
 
-  useEffect(() => {
-    const start = () => {
-      v.setValue(0);
-      loopRef.current = Animated.loop(
-        Animated.timing(v, {
-          toValue: 1,
-          duration,
-          easing: Easing.inOut(Easing.sin),
-          useNativeDriver: true,
-          isInteraction: false,
-        }),
-      );
-      loopRef.current.start();
-    };
+const Floating = (props: PropsWithChildren<FloatingProps>) => {
+  const { children, delay, distance, duration } = { ...defaults, ...props };
+  const { value } = useLoop({
+    duration,
+    delay,
+    easing: Easing.inOut(Easing.sin),
+  });
 
-    if (delay > 0) timeoutRef.current = setTimeout(start, delay);
-    else start();
-
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
-      loopRef.current?.stop?.();
-      loopRef.current = null;
-    };
-  }, [delay, duration, v]);
-
-  const translateY = v.interpolate({
+  const translateY = value.interpolate({
     inputRange: [0, 0.5, 1],
     outputRange: [0, -distance, 0],
   });
 
   return (
-    <Animated.View
-      pointerEvents="box-none"
-      className={className}
-      style={{ transform: [{ translateY }] }}
-    >
+    <Animated.View pointerEvents="box-none" style={{ transform: [{ translateY }] }}>
       {children}
     </Animated.View>
   );

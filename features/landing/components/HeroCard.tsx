@@ -1,9 +1,9 @@
-import { cn } from '@/libs/cn';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { memo, type ComponentProps } from 'react';
 import { Animated, Text, View } from 'react-native';
-import usePulse from '../hooks/usePulse';
+
+import { usePulse } from '../hooks/usePulse';
 
 interface HeroCardProps {
   title: string;
@@ -14,56 +14,41 @@ interface HeroCardProps {
   iconSize?: number;
   blurIntensity?: number;
   blurTint?: 'light' | 'dark' | 'default';
-  rootClassName?: string;
-  cardClassName?: string;
-  contentClassName?: string;
-  titleClassName?: string;
-  subtitleClassName?: string;
-  badgePillClassName?: string;
-  badgeTextClassName?: string;
 }
 
-const HeroCard = ({
-  title,
-  subtitle,
-  badges,
-  iconName = 'checkmark-done-circle',
-  iconColor = '#10b981',
-  iconSize = 84,
-  blurIntensity = 50,
-  blurTint = 'light',
-  rootClassName,
-  cardClassName,
-  contentClassName,
-  titleClassName,
-  subtitleClassName,
-  badgePillClassName,
-  badgeTextClassName,
-}: HeroCardProps) => {
+type OptionalProps = Omit<HeroCardProps, 'title' | 'subtitle' | 'badges'>;
+const defaults: Required<OptionalProps> = {
+  iconName: 'checkmark-done-circle',
+  iconColor: '#10b981',
+  iconSize: 84,
+  blurIntensity: 50,
+  blurTint: 'light',
+};
+
+const HeroCard = (props: HeroCardProps) => {
+  const { title, subtitle, badges, iconName, iconColor, iconSize, blurIntensity, blurTint } = {
+    ...defaults,
+    ...props,
+  };
   const pulse = usePulse({});
 
   return (
     <Animated.View
-      className={rootClassName}
       style={{ transform: [{ scale: pulse.scale }], opacity: pulse.opacity }}
       accessibilityRole="summary"
       accessibilityLabel={title}
       pointerEvents="box-none"
     >
-      <BlurView
-        intensity={blurIntensity}
-        tint={blurTint}
-        className={cn(styles.card, cardClassName)}
-      >
-        <View className={cn(styles.content, contentClassName)}>
+      <BlurView intensity={blurIntensity} tint={blurTint} className={styles.card}>
+        <View className={styles.content}>
           <Ionicons name={iconName} size={iconSize} color={iconColor} />
-          <Text className={cn(styles.title, titleClassName)}>{title}</Text>
-          {!!subtitle && <Text className={cn(styles.subtitle, subtitleClassName)}>{subtitle}</Text>}
+          <Text className={styles.title}>{title}</Text>
+          {!!subtitle && <Text className={styles.subtitle}>{subtitle}</Text>}
           {!!badges?.length && (
             <View className={styles.badgesRow}>
               {badges.map((b, i) => (
-                <View key={`${b}-${i}`} className={cn(styles.badgePill, badgePillClassName)}>
-                  <Text className={cn(styles.badgeText, badgeTextClassName)}>{b}</Text>
+                <View key={`${b}-${i}`} className={styles.badgePill}>
+                  <Text className={styles.badgeText}>{b}</Text>
                 </View>
               ))}
             </View>
