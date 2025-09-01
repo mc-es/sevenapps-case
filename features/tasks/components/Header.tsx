@@ -15,8 +15,8 @@ interface Props {
   onChangeTab: (t: TabKey) => void;
   search: string;
   onChangeSearch: (v: string) => void;
-  blurIntensity?: number;
-  blurTint?: 'light' | 'dark' | 'default';
+  intensity?: number;
+  tint?: 'light' | 'dark' | 'default';
 }
 
 interface PillProps {
@@ -24,11 +24,6 @@ interface PillProps {
   active: boolean;
   onPress: () => void;
 }
-
-const defaults: Required<Pick<Props, 'blurIntensity' | 'blurTint'>> = {
-  blurIntensity: 30,
-  blurTint: 'light',
-};
 
 const Pill = memo(function Pill({ label, active, onPress }: PillProps) {
   return (
@@ -44,10 +39,7 @@ const Pill = memo(function Pill({ label, active, onPress }: PillProps) {
 });
 
 const Header = (props: Props) => {
-  const { title, tab, onChangeTab, search, onChangeSearch, blurIntensity, blurTint } = {
-    ...defaults,
-    ...props,
-  };
+  const { title, tab, onChangeTab, search, onChangeSearch, intensity = 30, tint = 'light' } = props;
   const { t } = useTranslation();
 
   const onPressTab = useCallback((k: TabKey) => () => onChangeTab(k), [onChangeTab]);
@@ -60,7 +52,7 @@ const Header = (props: Props) => {
           <Pill key={k} label={t(`global.${k}`)} active={tab === k} onPress={onPressTab(k)} />
         ))}
       </View>
-      <BlurView intensity={blurIntensity} tint={blurTint} className={styles.searchBarWrap}>
+      <BlurView intensity={intensity} tint={tint} className={styles.searchBarWrap}>
         <View className={styles.searchBarInner}>
           <InputBox
             value={search}

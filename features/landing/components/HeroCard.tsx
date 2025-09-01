@@ -12,24 +12,21 @@ interface Props {
   iconName?: ComponentProps<typeof Ionicons>['name'];
   iconColor?: string;
   iconSize?: number;
-  blurIntensity?: number;
-  blurTint?: 'light' | 'dark' | 'default';
+  intensity?: number;
+  tint?: 'light' | 'dark' | 'default';
 }
 
-type OptionalProps = Omit<Props, 'title' | 'subtitle' | 'badges'>;
-const defaults: Required<OptionalProps> = {
-  iconName: 'checkmark-done-circle',
-  iconColor: '#10b981',
-  iconSize: 84,
-  blurIntensity: 50,
-  blurTint: 'light',
-};
-
 const HeroCard = (props: Props) => {
-  const { title, subtitle, badges, iconName, iconColor, iconSize, blurIntensity, blurTint } = {
-    ...defaults,
-    ...props,
-  };
+  const {
+    title,
+    subtitle,
+    badges,
+    iconName = 'checkmark-done-circle',
+    iconColor = '#10b981',
+    iconSize = 84,
+    intensity = 50,
+    tint = 'light',
+  } = props;
   const pulse = usePulse({});
 
   return (
@@ -38,7 +35,7 @@ const HeroCard = (props: Props) => {
       accessibilityRole="summary"
       pointerEvents="box-none"
     >
-      <BlurView intensity={blurIntensity} tint={blurTint} className={styles.card}>
+      <BlurView intensity={intensity} tint={tint} className={styles.card}>
         <View className={styles.content}>
           <Ionicons name={iconName} size={iconSize} color={iconColor} />
           <Text className={styles.title}>{title}</Text>

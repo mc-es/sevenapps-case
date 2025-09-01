@@ -13,13 +13,8 @@ interface Props {
   duration?: number;
 }
 
-const defaults: Required<Pick<Props, 'delay' | 'duration'>> = {
-  delay: 0,
-  duration: 6500,
-};
-
 const AnimatedBlob = (props: Props) => {
-  const { size, colors, initial, drift, delay, duration } = { ...defaults, ...props };
+  const { size, colors, initial, drift, delay = 0, duration = 6500 } = props;
   const { value } = useLoop({ duration, delay });
 
   const translateX = value.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0, drift.x, 0] });

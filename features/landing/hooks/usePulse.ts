@@ -15,14 +15,8 @@ interface Response {
   opacity: Animated.AnimatedInterpolation<string | number>;
 }
 
-const defaults: Required<Params> = {
-  from: 0.94,
-  to: 1.06,
-  duration: 2000,
-};
-
 const usePulse = (props: Params): Response => {
-  const { from, to, duration } = { ...defaults, ...props };
+  const { from = 0.94, to = 1.06, duration = 2000 } = props;
   const { value } = useLoop({ duration, easing: Easing.inOut(Easing.quad) });
 
   const ranges = useMemo(

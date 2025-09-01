@@ -16,20 +16,20 @@ interface Props {
   onClose: () => void;
   backdropOpacity?: number;
   intensity?: number;
-  blurTint?: 'light' | 'dark' | 'default';
+  tint?: 'light' | 'dark' | 'default';
 }
 
-const defaults: Required<Pick<Props, 'backdropOpacity' | 'intensity' | 'blurTint'>> = {
-  backdropOpacity: 0.65,
-  intensity: 65,
-  blurTint: 'light',
-};
-
 const BottomSheet = (props: Props) => {
-  const { visible, title, actions, cancelText, onClose, backdropOpacity, intensity, blurTint } = {
-    ...defaults,
-    ...props,
-  };
+  const {
+    visible,
+    title,
+    actions,
+    cancelText,
+    onClose,
+    backdropOpacity = 0.65,
+    intensity = 65,
+    tint = 'light',
+  } = props;
   const { open, backdropStyle, cardStyle } = useInOutAnimation({
     visible,
     translateY: { from: 60, to: 0 },
@@ -48,7 +48,7 @@ const BottomSheet = (props: Props) => {
         />
       </Animated.View>
       <Animated.View style={cardStyle} className={styles.sheetWrap}>
-        <BlurView intensity={intensity} tint={blurTint} className={styles.sheetBlur}>
+        <BlurView intensity={intensity} tint={tint} className={styles.sheetBlur}>
           <View className={styles.sheetFill} />
           <View className={styles.sheetInner}>
             <Text className={styles.sheetTitle}>{title}</Text>

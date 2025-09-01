@@ -13,18 +13,12 @@ interface Props {
   item: ListItem;
   onLongPress?: () => void;
   onDelete?: () => void;
-  blurIntensity?: number;
-  blurTint?: 'light' | 'dark' | 'default';
+  intensity?: number;
+  tint?: 'light' | 'dark' | 'default';
 }
 
-type OptionalProps = Omit<Props, 'item' | 'onLongPress' | 'onDelete'>;
-const defaults: Required<OptionalProps> = {
-  blurIntensity: 40,
-  blurTint: 'light',
-};
-
 const ListCard = (props: Props) => {
-  const { item, onLongPress, onDelete, blurIntensity, blurTint } = { ...defaults, ...props };
+  const { item, onLongPress, onDelete, intensity = 40, tint = 'light' } = props;
   const { t } = useTranslation();
   const fmt = useTRDateTimeFormat();
 
@@ -44,7 +38,7 @@ const ListCard = (props: Props) => {
   );
 
   return (
-    <BlurView intensity={blurIntensity} tint={blurTint} className={styles.blur}>
+    <BlurView intensity={intensity} tint={tint} className={styles.blur}>
       <Link href={{ pathname: '/tasks', params: { id: String(item.id) } }} asChild>
         <Pressable
           onLongPress={onLongPress}

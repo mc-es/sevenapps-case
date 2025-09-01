@@ -22,20 +22,11 @@ interface Props {
   onChangeText: (t: string) => void;
   onCancel: () => void;
   onSave: () => void;
-  backdropBlurIntensity?: number;
-  backdropBlurTint?: 'light' | 'dark' | 'default';
-  cardBlurIntensity?: number;
-  cardBlurTint?: 'light' | 'dark' | 'default';
+  backdropIntensity?: number;
+  backdropTint?: 'light' | 'dark' | 'default';
+  cardIntensity?: number;
+  cardTint?: 'light' | 'dark' | 'default';
 }
-
-const defaults: Required<
-  Pick<Props, 'backdropBlurIntensity' | 'backdropBlurTint' | 'cardBlurIntensity' | 'cardBlurTint'>
-> = {
-  backdropBlurIntensity: 100,
-  backdropBlurTint: 'dark',
-  cardBlurIntensity: 100,
-  cardBlurTint: 'dark',
-};
 
 const RenameModal = (props: Props) => {
   const {
@@ -46,11 +37,11 @@ const RenameModal = (props: Props) => {
     onChangeText,
     onCancel,
     onSave,
-    backdropBlurIntensity,
-    backdropBlurTint,
-    cardBlurIntensity,
-    cardBlurTint,
-  } = { ...defaults, ...props };
+    backdropIntensity = 100,
+    backdropTint = 'dark',
+    cardIntensity = 100,
+    cardTint = 'dark',
+  } = props;
   const { t } = useTranslation();
 
   const canSave = useMemo(() => value.trim().length > 0, [value]);
@@ -83,14 +74,10 @@ const RenameModal = (props: Props) => {
         behavior={Platform.select({ ios: 'padding', android: 'height' })}
         className={styles.backdrop}
       >
-        <BlurView
-          intensity={backdropBlurIntensity}
-          tint={backdropBlurTint}
-          style={styles.blurOverlay}
-        />
+        <BlurView intensity={backdropIntensity} tint={backdropTint} style={styles.blurOverlay} />
         <Pressable onPress={handleBackdropPress} className="flex-1" />
         <Pressable onPress={stopPropagation} className="px-6">
-          <BlurView intensity={cardBlurIntensity} tint={cardBlurTint} className={styles.card}>
+          <BlurView intensity={cardIntensity} tint={cardTint} className={styles.card}>
             <View className={styles.inlineCard}>
               <Text className={styles.title}>{title}</Text>
               <InputBox

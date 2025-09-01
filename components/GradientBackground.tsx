@@ -13,16 +13,14 @@ interface Props {
   className?: string;
 }
 
-const defaults: Required<Props> = {
-  colors: ['#0ea5e9', '#8b5cf6', '#111827'],
-  locations: [0, 0.6, 1],
-  start: { x: 0, y: 0 },
-  end: { x: 1, y: 1 },
-  className: '',
-};
-
 const GradientBackground = (props: Props) => {
-  const { colors, locations, start, end, className } = { ...defaults, ...props };
+  const {
+    colors = ['#0ea5e9', '#8b5cf6', '#111827'],
+    locations = [0, 0.6, 1],
+    start = { x: 0, y: 0 },
+    end = { x: 1, y: 1 },
+    className,
+  } = props;
 
   return (
     <LinearGradient

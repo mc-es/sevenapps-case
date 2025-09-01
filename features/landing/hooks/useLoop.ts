@@ -14,15 +14,13 @@ interface Response {
   stop: () => void;
 }
 
-const defaults: Required<Params> = {
-  duration: 2000,
-  easing: Easing.inOut(Easing.quad),
-  delay: 0,
-  autoStart: true,
-};
-
 const useLoop = (props: Params): Response => {
-  const { duration, easing, delay, autoStart } = { ...defaults, ...props };
+  const {
+    duration = 2000,
+    easing = Easing.inOut(Easing.quad),
+    delay = 0,
+    autoStart = true,
+  } = props;
   const value = useRef(new Animated.Value(0)).current;
   const loopRef = useRef<Animated.CompositeAnimation | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);

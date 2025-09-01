@@ -10,14 +10,8 @@ interface Props {
   duration?: number;
 }
 
-const defaults: Required<Props> = {
-  delay: 0,
-  distance: 8,
-  duration: 1800,
-};
-
 const Floating = (props: PropsWithChildren<Props>) => {
-  const { children, delay, distance, duration } = { ...defaults, ...props };
+  const { children, delay = 0, distance = 8, duration = 1800 } = props;
   const { value } = useLoop({
     duration,
     delay,

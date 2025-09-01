@@ -11,20 +11,12 @@ interface Props {
   onChangeSearch: (v: string) => void;
   onAdd: () => void;
   isDisabled?: boolean;
-  blurIntensity?: number;
-  blurTint?: 'light' | 'dark' | 'default';
+  intensity?: number;
+  tint?: 'light' | 'dark' | 'default';
 }
 
-const defaults: Required<Pick<Props, 'blurIntensity' | 'blurTint'>> = {
-  blurIntensity: 30,
-  blurTint: 'light',
-};
-
 const Header = (props: Props) => {
-  const { search, onChangeSearch, onAdd, blurIntensity, blurTint, isDisabled } = {
-    ...defaults,
-    ...props,
-  };
+  const { search, onChangeSearch, onAdd, intensity = 30, tint = 'light', isDisabled } = props;
   const { t } = useTranslation();
 
   return (
@@ -33,7 +25,7 @@ const Header = (props: Props) => {
         <Text className={styles.headerSubtitle}>{t('lists.subTitle')}</Text>
         <Text className={styles.headerTitle}>{t('lists.title')}</Text>
       </View>
-      <BlurView intensity={blurIntensity} tint={blurTint} className={styles.searchBarWrap}>
+      <BlurView intensity={intensity} tint={tint} className={styles.searchBarWrap}>
         <View className={styles.searchBarInner}>
           <InputBox
             value={search}

@@ -139,7 +139,7 @@ const ListsScreen = () => {
           if (selected) deleteList(selected.id);
         }}
         backdropOpacity={0.85}
-        blurIntensity={65}
+        intensity={65}
       />
       <RenameModal
         title={t('global.rename')}

@@ -10,17 +10,12 @@ import type { ListItem } from '@/types/lists';
 interface Props {
   items: ListItem[];
   title: string;
-  blurIntensity?: number;
-  blurTint?: 'light' | 'dark' | 'default';
+  intensity?: number;
+  tint?: 'light' | 'dark' | 'default';
 }
 
-const defaults: Required<Pick<Props, 'blurIntensity' | 'blurTint'>> = {
-  blurIntensity: 25,
-  blurTint: 'light',
-};
-
 const RecentListsStrip = (props: Props) => {
-  const { items, title, blurIntensity, blurTint } = { ...defaults, ...props };
+  const { items, title, intensity = 25, tint = 'light' } = props;
 
   if (!items?.length) return null;
 
@@ -30,7 +25,7 @@ const RecentListsStrip = (props: Props) => {
     const created = item?.created_at ? fmt.format(new Date(item.created_at)) : null;
 
     return (
-      <BlurView key={item.id} intensity={blurIntensity} tint={blurTint} className={styles.blur}>
+      <BlurView key={item.id} intensity={intensity} tint={tint} className={styles.blur}>
         <Link href={{ pathname: '/tasks', params: { id: String(item.id) } }} asChild>
           <Pressable
             className={styles.card}

@@ -12,15 +12,15 @@ interface Props {
   end?: { x: number; y: number };
 }
 
-type OptionalProps = Omit<Props, 'title' | 'subtitle' | 'onPress'>;
-const defaults: Required<OptionalProps> = {
-  colors: ['#111827', '#0b1220'],
-  start: { x: 0, y: 0 },
-  end: { x: 1, y: 1 },
-};
-
 const CTA = (props: Props) => {
-  const { title, subtitle, onPress, colors, start, end } = { ...defaults, ...props };
+  const {
+    title,
+    subtitle,
+    onPress,
+    colors = ['#111827', '#0b1220'],
+    start = { x: 0, y: 0 },
+    end = { x: 1, y: 1 },
+  } = props;
 
   const handlePress = useCallback(() => {
     onPress?.();

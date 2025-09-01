@@ -13,26 +13,18 @@ interface Props {
   onEdit: (task: TaskItem) => void;
   onDelete: (task: TaskItem) => void;
   onSetStatus: (task: TaskItem, status: Status) => void;
-  blurIntensity?: number;
-  blurTint?: 'light' | 'dark' | 'default';
+  intensity?: number;
+  tint?: 'light' | 'dark' | 'default';
 }
 
-const defaults: Required<Pick<Props, 'blurIntensity' | 'blurTint'>> = {
-  blurIntensity: 30,
-  blurTint: 'light',
-};
-
 const TaskCard = (props: Props) => {
-  const { item, onToggle, onEdit, onDelete, onSetStatus, blurIntensity, blurTint } = {
-    ...defaults,
-    ...props,
-  };
+  const { item, onToggle, onEdit, onDelete, onSetStatus, intensity = 30, tint = 'light' } = props;
   const { t } = useTranslation();
 
   const done = useMemo(() => !!item.is_completed, [item.is_completed]);
 
   return (
-    <BlurView intensity={blurIntensity} tint={blurTint} className={styles.blur}>
+    <BlurView intensity={intensity} tint={tint} className={styles.blur}>
       <Pressable
         onPress={() => onToggle(item)}
         accessibilityRole="button"
@@ -71,7 +63,6 @@ const TaskCard = (props: Props) => {
                 colors={['#3b82f6', '#2563eb']}
               />
             )}
-
             <Button
               title={t('global.edit')}
               variant="solid"

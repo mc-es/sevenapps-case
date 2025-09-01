@@ -15,15 +15,9 @@ interface Props {
   onConfirm: () => void;
   onCancel: () => void;
   backdropOpacity?: number;
-  blurIntensity?: number;
-  blurTint?: 'light' | 'dark' | 'default';
+  intensity?: number;
+  tint?: 'light' | 'dark' | 'default';
 }
-
-const defaults: Required<Pick<Props, 'backdropOpacity' | 'blurIntensity' | 'blurTint'>> = {
-  backdropOpacity: 0.65,
-  blurIntensity: 50,
-  blurTint: 'light',
-};
 
 const ConfirmDialog = (props: Props) => {
   const {
@@ -34,13 +28,10 @@ const ConfirmDialog = (props: Props) => {
     cancelText,
     onConfirm,
     onCancel,
-    backdropOpacity,
-    blurIntensity,
-    blurTint,
-  } = {
-    ...defaults,
-    ...props,
-  };
+    backdropOpacity = 0.65,
+    intensity = 50,
+    tint = 'light',
+  } = props;
   const { open, backdropStyle } = useInOutAnimation({
     visible,
     translateY: { from: 60, to: 0 },
@@ -59,7 +50,7 @@ const ConfirmDialog = (props: Props) => {
         />
       </Animated.View>
       <View className={styles.center}>
-        <BlurView intensity={blurIntensity} tint={blurTint} className={styles.card}>
+        <BlurView intensity={intensity} tint={tint} className={styles.card}>
           <Text className={styles.title}>{title}</Text>
           <Text className={styles.msg}>{message}</Text>
           <View className={styles.row}>

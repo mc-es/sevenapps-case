@@ -35,20 +35,20 @@ interface Props {
   intensity?: number;
 }
 
-const defaults: Required<Pick<Props, 'backdropOpacity' | 'intensity'>> = {
-  backdropOpacity: 0.85,
-  intensity: 80,
-};
-
 const PRIORITIES: Priority[] = ['low', 'medium', 'high'];
 const IN_DURATION = 220;
 const OUT_DURATION = 180;
 
 const TaskFormModal = (props: Props) => {
-  const { visible, mode, initial, onClose, onSubmit, backdropOpacity, intensity } = {
-    ...defaults,
-    ...props,
-  };
+  const {
+    visible,
+    mode,
+    initial,
+    onClose,
+    onSubmit,
+    backdropOpacity = 0.85,
+    intensity = 80,
+  } = props;
   const { t } = useTranslation();
 
   const [name, setName] = useState(initial?.name ?? '');
