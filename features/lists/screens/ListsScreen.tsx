@@ -11,12 +11,16 @@ import {
   GlassActionSheet,
 } from '@/components';
 import { useDebouncedValue } from '@/hooks';
+import { useUiHydrated, useUiStore } from '@/store';
 
 import { Header, ListBody, RecentListsStrip, RenameModal } from '../components';
 import { useListsData } from '../hooks';
 
 const ListsScreen = () => {
   const { t } = useTranslation();
+  const hydrated = useUiHydrated();
+  const next = useUiStore((s) => s.nextListCounter);
+  const bump = useUiStore((s) => s.bump);
   const [search, setSearch] = useState('');
   const debounced = useDebouncedValue(search, 400);
   const {
@@ -30,7 +34,6 @@ const ListsScreen = () => {
     renameList,
     deleteList,
   } = useListsData({ debouncedSearch: debounced, recentLimit: 3 });
-  const [counter, setCounter] = useState(1);
   const [renameVisible, setRenameVisible] = useState(false);
   const [renameValue, setRenameValue] = useState('');
   const [renameTargetId, setRenameTargetId] = useState<number | null>(null);
@@ -44,9 +47,11 @@ const ListsScreen = () => {
   };
 
   const addList = () => {
-    const name = t('lists.createNewList', { counter });
-    setCounter((c) => c + 1);
+    if (!hydrated) return;
+
+    const name = t('lists.createNewList', { counter: next });
     createList(name);
+    bump();
   };
 
   let content: React.ReactNode;
@@ -85,7 +90,7 @@ const ListsScreen = () => {
     <Container padding={{ top: 20 }}>
       <StatusBar style="light" translucent backgroundColor="transparent" />
       <BackgroundGradient />
-      <Header search={search} onChangeSearch={setSearch} onAdd={addList} />
+      <Header search={search} onChangeSearch={setSearch} onAdd={addList} isDisabled={!hydrated} />
       {debounced.length === 0 && (
         <RecentListsStrip title={t('lists.recentListTitle')} items={recentLists} />
       )}

@@ -4,11 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 
 import { Button, InputBox } from '@/components';
+import { cn } from '@/libs';
 
 interface Props {
   search: string;
   onChangeSearch: (v: string) => void;
   onAdd: () => void;
+  isDisabled?: boolean;
   blurIntensity?: number;
   blurTint?: 'light' | 'dark' | 'default';
 }
@@ -19,7 +21,10 @@ const defaults: Required<Pick<Props, 'blurIntensity' | 'blurTint'>> = {
 };
 
 const Header = (props: Props) => {
-  const { search, onChangeSearch, onAdd, blurIntensity, blurTint } = { ...defaults, ...props };
+  const { search, onChangeSearch, onAdd, blurIntensity, blurTint, isDisabled } = {
+    ...defaults,
+    ...props,
+  };
   const { t } = useTranslation();
 
   return (
@@ -38,7 +43,18 @@ const Header = (props: Props) => {
             containerClassName="flex-1"
             inputClassName="px-2"
           />
-          <Button title={`${t('global.add')} +`} size="sm" onPress={onAdd} rootClassName="ml-2" />
+          <View
+            className={cn(isDisabled && 'opacity-60')}
+            pointerEvents={isDisabled ? 'none' : 'auto'}
+          >
+            <Button
+              title={`${t('global.add')} +`}
+              size="sm"
+              onPress={onAdd}
+              rootClassName="ml-2"
+              disabled={isDisabled}
+            />
+          </View>
         </View>
       </BlurView>
     </View>

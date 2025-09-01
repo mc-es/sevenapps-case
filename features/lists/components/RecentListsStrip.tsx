@@ -31,7 +31,7 @@ const RecentListsStrip = (props: Props) => {
 
     return (
       <BlurView key={item.id} intensity={blurIntensity} tint={blurTint} className={styles.blur}>
-        <Link href={{ pathname: '/details', params: { id: String(item.id) } }} asChild>
+        <Link href={{ pathname: '/tasks', params: { id: String(item.id) } }} asChild>
           <Pressable
             className={styles.card}
             accessibilityRole="button"
