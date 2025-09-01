@@ -5,7 +5,7 @@ import { Animated, Text, View } from 'react-native';
 
 import { usePulse } from '../hooks';
 
-interface HeroCardProps {
+interface Props {
   title: string;
   subtitle: string;
   badges: string[];
@@ -16,7 +16,7 @@ interface HeroCardProps {
   blurTint?: 'light' | 'dark' | 'default';
 }
 
-type OptionalProps = Omit<HeroCardProps, 'title' | 'subtitle' | 'badges'>;
+type OptionalProps = Omit<Props, 'title' | 'subtitle' | 'badges'>;
 const defaults: Required<OptionalProps> = {
   iconName: 'checkmark-done-circle',
   iconColor: '#10b981',
@@ -25,7 +25,7 @@ const defaults: Required<OptionalProps> = {
   blurTint: 'light',
 };
 
-const HeroCard = (props: HeroCardProps) => {
+const HeroCard = (props: Props) => {
   const { title, subtitle, badges, iconName, iconColor, iconSize, blurIntensity, blurTint } = {
     ...defaults,
     ...props,

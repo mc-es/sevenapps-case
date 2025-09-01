@@ -4,19 +4,19 @@ import { Animated, Easing } from 'react-native';
 
 import { useLoop } from '../hooks';
 
-interface FloatingProps {
+interface Props {
   delay?: number;
   distance?: number;
   duration?: number;
 }
 
-const defaults: Required<FloatingProps> = {
+const defaults: Required<Props> = {
   delay: 0,
   distance: 8,
   duration: 1800,
 };
 
-const Floating = (props: PropsWithChildren<FloatingProps>) => {
+const Floating = (props: PropsWithChildren<Props>) => {
   const { children, delay, distance, duration } = { ...defaults, ...props };
   const { value } = useLoop({
     duration,

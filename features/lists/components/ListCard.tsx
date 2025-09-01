@@ -9,7 +9,7 @@ import { Button } from '@/components';
 import { useTRDateTimeFormat } from '@/hooks';
 import type { ListItem } from '@/types/lists';
 
-interface ListCardProps {
+interface Props {
   item: ListItem;
   onLongPress?: () => void;
   onDelete?: () => void;
@@ -17,13 +17,13 @@ interface ListCardProps {
   blurTint?: 'light' | 'dark' | 'default';
 }
 
-type OptionalProps = Omit<ListCardProps, 'item' | 'onLongPress' | 'onDelete'>;
+type OptionalProps = Omit<Props, 'item' | 'onLongPress' | 'onDelete'>;
 const defaults: Required<OptionalProps> = {
   blurIntensity: 40,
   blurTint: 'light',
 };
 
-const ListCard = (props: ListCardProps) => {
+const ListCard = (props: Props) => {
   const { item, onLongPress, onDelete, blurIntensity, blurTint } = { ...defaults, ...props };
   const { t } = useTranslation();
   const fmt = useTRDateTimeFormat();

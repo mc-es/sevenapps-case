@@ -14,7 +14,7 @@ import {
 
 import { Button, InputBox } from '@/components';
 
-interface RenameModalProps {
+interface Props {
   title: string;
   placeholder: string;
   visible: boolean;
@@ -29,10 +29,7 @@ interface RenameModalProps {
 }
 
 const defaults: Required<
-  Pick<
-    RenameModalProps,
-    'backdropBlurIntensity' | 'backdropBlurTint' | 'cardBlurIntensity' | 'cardBlurTint'
-  >
+  Pick<Props, 'backdropBlurIntensity' | 'backdropBlurTint' | 'cardBlurIntensity' | 'cardBlurTint'>
 > = {
   backdropBlurIntensity: 100,
   backdropBlurTint: 'dark',
@@ -40,7 +37,7 @@ const defaults: Required<
   cardBlurTint: 'dark',
 };
 
-const RenameModal = (props: RenameModalProps) => {
+const RenameModal = (props: Props) => {
   const {
     title,
     placeholder,

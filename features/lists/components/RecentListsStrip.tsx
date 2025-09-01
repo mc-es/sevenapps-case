@@ -7,19 +7,19 @@ import { FlatList, Pressable, Text, View } from 'react-native';
 import { useTRDateTimeFormat } from '@/hooks';
 import type { ListItem } from '@/types/lists';
 
-type RecentListsStripProps = {
+interface Props {
   items: ListItem[];
   title: string;
   blurIntensity?: number;
   blurTint?: 'light' | 'dark' | 'default';
-};
+}
 
-const defaults: Required<Pick<RecentListsStripProps, 'blurIntensity' | 'blurTint'>> = {
+const defaults: Required<Pick<Props, 'blurIntensity' | 'blurTint'>> = {
   blurIntensity: 25,
   blurTint: 'light',
 };
 
-const RecentListsStrip = (props: RecentListsStripProps) => {
+const RecentListsStrip = (props: Props) => {
   const { items, title, blurIntensity, blurTint } = { ...defaults, ...props };
 
   if (!items?.length) return null;

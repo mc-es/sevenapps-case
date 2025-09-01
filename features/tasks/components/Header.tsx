@@ -8,7 +8,7 @@ import { cn } from '@/libs';
 const Tabs = ['all', 'upcoming', 'completed'] as const;
 type TabKey = (typeof Tabs)[number];
 
-interface HeaderProps {
+interface Props {
   title: string;
   tab: TabKey;
   onChangeTab: (t: TabKey) => void;
@@ -35,7 +35,7 @@ const Pill = memo(function Pill({ label, active, onPress }: PillProps) {
   );
 });
 
-const Header = (props: HeaderProps) => {
+const Header = (props: Props) => {
   const { title, tab, onChangeTab, search, onChangeSearch } = props;
   const { t } = useTranslation();
 

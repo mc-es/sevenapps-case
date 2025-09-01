@@ -13,6 +13,14 @@ interface Params {
   onClosed?: () => void;
 }
 
+interface Response {
+  open: boolean;
+  backdropStyle: { opacity: Animated.Value };
+  cardStyle: { transform: { translateY: Animated.Value }[]; opacity: Animated.Value };
+  fade: Animated.Value;
+  translate: Animated.Value;
+}
+
 type OptionalProps = Omit<Params, 'visible' | 'onClosed'>;
 const defaults: Required<OptionalProps> = {
   translateY: { from: 20, to: 0 },
@@ -21,14 +29,6 @@ const defaults: Required<OptionalProps> = {
   easingIn: Easing.out(Easing.quad),
   easingOut: Easing.in(Easing.quad),
 };
-
-interface Response {
-  open: boolean;
-  backdropStyle: { opacity: Animated.Value };
-  cardStyle: { transform: { translateY: Animated.Value }[]; opacity: Animated.Value };
-  fade: Animated.Value;
-  translate: Animated.Value;
-}
 
 const useModalInOutAnimation = (props: Params): Response => {
   const { visible, translateY, inDuration, outDuration, easingIn, easingOut, onClosed } = {

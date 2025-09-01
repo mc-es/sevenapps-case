@@ -20,7 +20,7 @@ import { useModalInOutAnimation } from '../hooks';
 
 type Mode = 'create' | 'edit';
 
-interface TaskFormModalProps {
+interface Props {
   visible: boolean;
   mode: Mode;
   onClose: () => void;
@@ -30,7 +30,7 @@ interface TaskFormModalProps {
   intensity?: number;
 }
 
-const defaults: Required<Pick<TaskFormModalProps, 'backdropOpacity' | 'intensity'>> = {
+const defaults: Required<Pick<Props, 'backdropOpacity' | 'intensity'>> = {
   backdropOpacity: 0.85,
   intensity: 80,
 };
@@ -39,7 +39,7 @@ const PRIORITIES: Priority[] = ['low', 'medium', 'high'];
 const IN_DURATION = 220;
 const OUT_DURATION = 180;
 
-const TaskFormModal = (props: TaskFormModalProps) => {
+const TaskFormModal = (props: Props) => {
   const { visible, mode, initial, onClose, onSubmit, backdropOpacity, intensity } = {
     ...defaults,
     ...props,

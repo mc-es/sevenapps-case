@@ -8,12 +8,12 @@ import type { Priority } from '@/types/tasks';
 
 const Priority: Priority[] = ['low', 'medium', 'high'];
 
-interface PriorityBarProps {
+interface Props {
   value: Priority | null;
   onChange: (p: Priority | null) => void;
 }
 
-const PriorityBar = ({ value, onChange }: PriorityBarProps) => {
+const PriorityBar = ({ value, onChange }: Props) => {
   const { t } = useTranslation();
 
   return (

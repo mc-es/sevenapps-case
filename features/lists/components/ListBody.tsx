@@ -7,7 +7,7 @@ import type { ListItem } from '@/types/lists';
 
 import ListCard from './ListCard';
 
-interface ListBodyProps {
+interface Props {
   lists: ListItem[];
   isRefetching: boolean;
   refetchAll: () => void;
@@ -16,7 +16,7 @@ interface ListBodyProps {
   onDeleteItem: (item: ListItem) => void;
 }
 
-const ListBody = (props: ListBodyProps) => {
+const ListBody = (props: Props) => {
   const { lists, isRefetching, refetchAll, onButtonPress, onLongPressItem, onDeleteItem } = props;
   const { t } = useTranslation();
 

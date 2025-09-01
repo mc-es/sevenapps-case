@@ -4,7 +4,7 @@ import { Animated } from 'react-native';
 
 import { useLoop } from '../hooks';
 
-interface AnimatedBlobProps {
+interface Props {
   size: number;
   colors: readonly [string, string, ...string[]];
   initial: { top: number; left: number };
@@ -13,12 +13,12 @@ interface AnimatedBlobProps {
   duration?: number;
 }
 
-const defaults: Required<Pick<AnimatedBlobProps, 'delay' | 'duration'>> = {
+const defaults: Required<Pick<Props, 'delay' | 'duration'>> = {
   delay: 0,
   duration: 6500,
 };
 
-const AnimatedBlob = (props: AnimatedBlobProps) => {
+const AnimatedBlob = (props: Props) => {
   const { size, colors, initial, drift, delay, duration } = { ...defaults, ...props };
   const { value } = useLoop({ duration, delay });
 

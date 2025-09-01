@@ -5,7 +5,7 @@ import { Text, View } from 'react-native';
 
 import { Button, InputBox } from '@/components';
 
-interface HeaderProps {
+interface Props {
   search: string;
   onChangeSearch: (v: string) => void;
   onAdd: () => void;
@@ -13,12 +13,12 @@ interface HeaderProps {
   blurTint?: 'light' | 'dark' | 'default';
 }
 
-const defaults: Required<Pick<HeaderProps, 'blurIntensity' | 'blurTint'>> = {
+const defaults: Required<Pick<Props, 'blurIntensity' | 'blurTint'>> = {
   blurIntensity: 30,
   blurTint: 'light',
 };
 
-const Header = (props: HeaderProps) => {
+const Header = (props: Props) => {
   const { search, onChangeSearch, onAdd, blurIntensity, blurTint } = { ...defaults, ...props };
   const { t } = useTranslation();
 

@@ -7,7 +7,7 @@ import { Button } from '@/components';
 import { cn } from '@/libs';
 import type { TaskItem } from '@/types/tasks';
 
-interface TaskCardProps {
+interface Props {
   item: TaskItem;
   onToggle: (task: TaskItem) => void;
   onEdit: (task: TaskItem) => void;
@@ -16,12 +16,12 @@ interface TaskCardProps {
   blurTint?: 'light' | 'dark' | 'default';
 }
 
-const defaults: Required<Pick<TaskCardProps, 'blurIntensity' | 'blurTint'>> = {
+const defaults: Required<Pick<Props, 'blurIntensity' | 'blurTint'>> = {
   blurIntensity: 30,
   blurTint: 'light',
 };
 
-const TaskCard = (props: TaskCardProps) => {
+const TaskCard = (props: Props) => {
   const { item, onToggle, onEdit, onDelete, blurIntensity, blurTint } = { ...defaults, ...props };
   const { t } = useTranslation();
 

@@ -1,27 +1,33 @@
 import { useEffect, useRef } from 'react';
 import { Animated, Easing } from 'react-native';
 
-interface UseLoopProps {
+interface Params {
   duration?: number;
   easing?: (value: number) => number;
   delay?: number;
   autoStart?: boolean;
 }
 
-const defaults: Required<UseLoopProps> = {
+interface Response {
+  value: Animated.Value;
+  start: () => void;
+  stop: () => void;
+}
+
+const defaults: Required<Params> = {
   duration: 2000,
   easing: Easing.inOut(Easing.quad),
   delay: 0,
   autoStart: true,
 };
 
-const useLoop = (props: UseLoopProps) => {
+const useLoop = (props: Params): Response => {
   const { duration, easing, delay, autoStart } = { ...defaults, ...props };
   const value = useRef(new Animated.Value(0)).current;
   const loopRef = useRef<Animated.CompositeAnimation | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const start = () => {
+  const start = (): void => {
     value.setValue(0);
     loopRef.current = Animated.loop(
       Animated.timing(value, {
@@ -35,7 +41,7 @@ const useLoop = (props: UseLoopProps) => {
     loopRef.current.start();
   };
 
-  const stop = () => {
+  const stop = (): void => {
     loopRef.current?.stop?.();
     loopRef.current = null;
 

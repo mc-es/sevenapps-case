@@ -1,21 +1,27 @@
 import { useMemo } from 'react';
+import type { Animated } from 'react-native';
 import { Easing } from 'react-native';
 
 import { useLoop } from './useLoop';
 
-interface UsePulseProps {
+interface Params {
   from?: number;
   to?: number;
   duration?: number;
 }
 
-const defaults: Required<UsePulseProps> = {
+interface Response {
+  scale: Animated.AnimatedInterpolation<string | number>;
+  opacity: Animated.AnimatedInterpolation<string | number>;
+}
+
+const defaults: Required<Params> = {
   from: 0.94,
   to: 1.06,
   duration: 2000,
 };
 
-const usePulse = (props: UsePulseProps) => {
+const usePulse = (props: Params): Response => {
   const { from, to, duration } = { ...defaults, ...props };
   const { value } = useLoop({ duration, easing: Easing.inOut(Easing.quad) });
 

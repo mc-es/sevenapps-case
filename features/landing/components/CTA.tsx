@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 
 import { Button } from '@/components';
 
-interface CTAProps {
+interface Props {
   title: string;
   subtitle: string;
   onPress: () => void;
@@ -12,14 +12,14 @@ interface CTAProps {
   end?: { x: number; y: number };
 }
 
-type OptionalProps = Omit<CTAProps, 'title' | 'subtitle' | 'onPress'>;
+type OptionalProps = Omit<Props, 'title' | 'subtitle' | 'onPress'>;
 const defaults: Required<OptionalProps> = {
   colors: ['#111827', '#0b1220'],
   start: { x: 0, y: 0 },
   end: { x: 1, y: 1 },
 };
 
-const CTA = (props: CTAProps) => {
+const CTA = (props: Props) => {
   const { title, subtitle, onPress, colors, start, end } = { ...defaults, ...props };
   const handlePress = useCallback(() => {
     onPress?.();

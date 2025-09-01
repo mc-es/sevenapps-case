@@ -7,7 +7,7 @@ import type { TaskItem } from '@/types/tasks';
 
 import TaskCard from './TaskCard';
 
-interface TaskBodyProps {
+interface Props {
   tasks: TaskItem[];
   completedCount: number;
   isRefetching: boolean;
@@ -18,7 +18,7 @@ interface TaskBodyProps {
   onDelete: (taskId: TaskItem) => void;
 }
 
-const TaskBody = (props: TaskBodyProps) => {
+const TaskBody = (props: Props) => {
   const { tasks, completedCount, isRefetching, refetchAll, onAdd, onToggle, onEdit, onDelete } =
     props;
   const { t } = useTranslation();
