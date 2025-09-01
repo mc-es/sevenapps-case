@@ -21,6 +21,7 @@ const defaults: Required<OptionalProps> = {
 
 const CTA = (props: Props) => {
   const { title, subtitle, onPress, colors, start, end } = { ...defaults, ...props };
+
   const handlePress = useCallback(() => {
     onPress?.();
   }, [onPress]);

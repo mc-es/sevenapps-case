@@ -13,10 +13,9 @@ import {
 } from 'react-native';
 
 import { Button, InputBox } from '@/components';
+import { useInOutAnimation } from '@/hooks';
 import { cn } from '@/libs';
 import type { Priority, TaskItem } from '@/types/tasks';
-
-import { useModalInOutAnimation } from '../hooks';
 
 type Mode = 'create' | 'edit';
 
@@ -59,7 +58,7 @@ const TaskFormModal = (props: Props) => {
     }
   }, [visible, initial?.name, initial?.description, initial?.priority]);
 
-  const { open, backdropStyle, cardStyle } = useModalInOutAnimation({
+  const { open, backdropStyle, cardStyle } = useInOutAnimation({
     visible,
     translateY: { from: 20, to: 0 },
     inDuration: IN_DURATION,

@@ -1,17 +1,15 @@
-import React from 'react';
+import { memo } from 'react';
 import { TextInput, View, type TextInputProps } from 'react-native';
 
 import { cn } from '@/libs';
 
 type Variant = 'default' | 'glass';
 
-export interface InputBoxProps extends TextInputProps {
+interface Props extends TextInputProps {
   containerClassName?: string;
   inputClassName?: string;
   variant?: Variant;
   placeholderColor?: string;
-  left?: React.ReactNode;
-  right?: React.ReactNode;
 }
 
 const base = {
@@ -32,28 +30,19 @@ const variants: Record<Variant, { container: string; input: string; placeholder:
   },
 };
 
-const InputBox = ({
-  containerClassName,
-  inputClassName,
-  variant = 'default',
-  placeholderColor,
-  left,
-  right,
-  ...props
-}: InputBoxProps) => {
+const InputBox = (props: Props) => {
+  const { containerClassName, inputClassName, variant = 'default', placeholderColor } = props;
   const v = variants[variant];
 
   return (
     <View className={cn(base.container, v.container, containerClassName)}>
-      {left}
       <TextInput
         className={cn(base.input, v.input, inputClassName)}
         placeholderTextColor={placeholderColor ?? v.placeholder}
         {...props}
       />
-      {right}
     </View>
   );
 };
 
-export default InputBox;
+export default memo(InputBox);

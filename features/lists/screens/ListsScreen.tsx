@@ -1,26 +1,21 @@
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Text, View } from 'react-native';
 
-import {
-  BackgroundGradient,
-  Button,
-  ConfirmGlassDialog,
-  Container,
-  GlassActionSheet,
-} from '@/components';
+import { BottomSheet, Button, ConfirmDialog, Container, GradientBackground } from '@/components';
 import { useDebouncedValue } from '@/hooks';
-import { useUiHydrated, useUiStore } from '@/store';
+import { useHydrated, useStore } from '@/store';
 
 import { Header, ListBody, RecentListsStrip, RenameModal } from '../components';
 import { useListsData } from '../hooks';
 
 const ListsScreen = () => {
   const { t } = useTranslation();
-  const hydrated = useUiHydrated();
-  const next = useUiStore((s) => s.nextListCounter);
-  const bump = useUiStore((s) => s.bump);
+  const hydrated = useHydrated();
+  const next = useStore((s) => s.nextListCounter);
+  const bump = useStore((s) => s.bump);
+  const resetCounter = useStore((s) => s.reset);
   const [search, setSearch] = useState('');
   const debounced = useDebouncedValue(search, 400);
   const {
@@ -40,6 +35,13 @@ const ListsScreen = () => {
   const [sheetVisible, setSheetVisible] = useState(false);
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [selected, setSelected] = useState<{ id: number; name: string } | null>(null);
+
+  useEffect(() => {
+    const noSearch = debounced.length === 0;
+    const listsAreEmpty = (lists?.length ?? 0) === 0;
+
+    if (hydrated && noSearch && !isLoading && !isRefetching && listsAreEmpty) resetCounter();
+  }, [hydrated, debounced, isLoading, isRefetching, lists?.length, resetCounter]);
 
   const openOptions = (id: number, name: string) => {
     setSelected({ id, name });
@@ -89,15 +91,16 @@ const ListsScreen = () => {
   return (
     <Container padding={{ top: 20 }}>
       <StatusBar style="light" translucent backgroundColor="transparent" />
-      <BackgroundGradient />
+      <GradientBackground />
       <Header search={search} onChangeSearch={setSearch} onAdd={addList} isDisabled={!hydrated} />
       {debounced.length === 0 && (
         <RecentListsStrip title={t('lists.recentListTitle')} items={recentLists} />
       )}
       {content}
-      <GlassActionSheet
+      <BottomSheet
         visible={sheetVisible}
-        title={selected?.name}
+        title={selected?.name ?? ''}
+        cancelText={t('global.close')}
         backdropOpacity={0.85}
         intensity={65}
         onClose={() => setSheetVisible(false)}
@@ -125,17 +128,18 @@ const ListsScreen = () => {
           },
         ]}
       />
-      <ConfirmGlassDialog
+      <ConfirmDialog
         visible={confirmVisible}
         title={t('lists.confirmDialogTitle')}
         message={t('lists.confirmDialogMessage', { name: selected?.name })}
         confirmText={t('global.delete')}
         cancelText={t('global.cancel')}
-        destructive
         onCancel={() => setConfirmVisible(false)}
         onConfirm={() => {
           if (selected) deleteList(selected.id);
         }}
+        backdropOpacity={0.85}
+        blurIntensity={65}
       />
       <RenameModal
         title={t('global.rename')}

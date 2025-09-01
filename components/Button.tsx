@@ -6,11 +6,10 @@ import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { cn } from '@/libs';
 
 type ColorTuple = readonly [string, string, ...string[]];
-
 type Variant = 'solid' | 'outline' | 'ghost';
 type Size = 'sm' | 'md' | 'lg';
 
-interface ButtonProps {
+interface Props {
   title: string;
   onPress?: (e?: GestureResponderEvent) => void;
   variant?: Variant;
@@ -26,27 +25,26 @@ interface ButtonProps {
   rootClassName?: string;
   contentClassName?: string;
   textClassName?: string;
-  accessibilityLabel?: string;
 }
 
-const Button = ({
-  title,
-  onPress,
-  variant = 'solid',
-  size = 'md',
-  disabled,
-  loading,
-  fullWidth,
-  colors = ['#111827', '#0b1220'],
-  start = { x: 0, y: 0 },
-  end = { x: 1, y: 1 },
-  left,
-  right,
-  rootClassName,
-  contentClassName,
-  textClassName,
-  accessibilityLabel,
-}: ButtonProps) => {
+const Button = (props: Props) => {
+  const {
+    title,
+    onPress,
+    variant = 'solid',
+    size = 'md',
+    disabled,
+    loading,
+    fullWidth,
+    colors = ['#111827', '#0b1220'],
+    start = { x: 0, y: 0 },
+    end = { x: 1, y: 1 },
+    left,
+    right,
+    rootClassName,
+    contentClassName,
+    textClassName,
+  } = props;
   let sizeCls: string;
 
   if (size === 'sm') sizeCls = styles.sizeSm;
@@ -65,7 +63,6 @@ const Button = ({
 
   const pressableProps = {
     accessibilityRole: 'button' as const,
-    accessibilityLabel: accessibilityLabel ?? title,
     disabled: disabled || loading,
     style: ({ pressed }: { pressed: boolean }) => [{ opacity: pressed ? 0.96 : 1 }],
     onPress: (e: GestureResponderEvent) => onPress?.(e),

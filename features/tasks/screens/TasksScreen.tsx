@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Text, View } from 'react-native';
 
-import { BackgroundGradient, Button, ConfirmGlassDialog, Container } from '@/components';
+import { Button, ConfirmDialog, Container, GradientBackground } from '@/components';
 import { useDebouncedValue } from '@/hooks';
 import { getListById, listsKeys } from '@/queries';
 import type { Priority, TaskItem } from '@/types/tasks';
@@ -127,9 +127,9 @@ const TasksScreen = () => {
   return (
     <Container padding={{ top: 20 }}>
       <StatusBar style="light" translucent backgroundColor="transparent" />
-      <BackgroundGradient />
+      <GradientBackground />
       <Header
-        title={listQ.data?.name ?? 'Liste'}
+        title={listQ.data?.name ?? ''}
         tab={tab}
         onChangeTab={setTab}
         search={search}
@@ -157,13 +157,12 @@ const TasksScreen = () => {
           editTask({ id: editing.id, ...p });
         }}
       />
-      <ConfirmGlassDialog
+      <ConfirmDialog
         visible={confirmVisible}
         title={t('tasks.confirmDialogTitle')}
         message={t('tasks.confirmDialogMessage', { name: selectedTask?.name })}
         confirmText={t('global.delete')}
         cancelText={t('global.cancel')}
-        destructive
         onCancel={() => setConfirmVisible(false)}
         onConfirm={() => {
           if (selectedTask) deleteTask(selectedTask.id);

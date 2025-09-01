@@ -7,14 +7,16 @@ interface UiState {
   nextListCounter: number;
   bump: () => void;
   set: (n: number) => void;
+  reset: () => void;
 }
 
-const useUiStore = create<UiState>()(
+const useStore = create<UiState>()(
   persist(
     (set, get) => ({
       nextListCounter: 1,
       bump: (): void => set({ nextListCounter: get().nextListCounter + 1 }),
       set: (n): void => set({ nextListCounter: n }),
+      reset: (): void => set({ nextListCounter: 1 }),
     }),
     {
       name: 'ui-store',
@@ -23,12 +25,12 @@ const useUiStore = create<UiState>()(
   ),
 );
 
-const useUiHydrated = (): boolean => {
+const useHydrated = (): boolean => {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    const unsub = useUiStore.persist?.onFinishHydration?.(() => setHydrated(true));
-    setHydrated(useUiStore.persist?.hasHydrated?.() ?? false);
+    const unsub = useStore.persist?.onFinishHydration?.(() => setHydrated(true));
+    setHydrated(useStore.persist?.hasHydrated?.() ?? false);
 
     return unsub;
   }, []);
@@ -36,4 +38,4 @@ const useUiHydrated = (): boolean => {
   return hydrated;
 };
 
-export { useUiHydrated, useUiStore };
+export { useHydrated, useStore };

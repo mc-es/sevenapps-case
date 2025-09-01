@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Text, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { BackgroundGradient, Container } from '@/components';
+import { Container, GradientBackground, LanguageSwitcher } from '@/components';
 
 import { AnimatedBlob, CTA, Floating, HeroCard } from '../components';
 
@@ -16,7 +16,8 @@ const LandingScreen = () => {
   return (
     <Container padding={{ bottom: insets.bottom + 15 }}>
       <StatusBar style="light" translucent backgroundColor="transparent" />
-      <BackgroundGradient />
+      <GradientBackground />
+      <LanguageSwitcher />
       <AnimatedBlob
         size={260}
         colors={['#93c5fd', '#a78bfa']}

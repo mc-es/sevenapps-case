@@ -36,7 +36,6 @@ const HeroCard = (props: Props) => {
     <Animated.View
       style={{ transform: [{ scale: pulse.scale }], opacity: pulse.opacity }}
       accessibilityRole="summary"
-      accessibilityLabel={title}
       pointerEvents="box-none"
     >
       <BlurView intensity={blurIntensity} tint={blurTint} className={styles.card}>

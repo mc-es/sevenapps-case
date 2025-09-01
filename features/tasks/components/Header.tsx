@@ -37,8 +37,8 @@ const Pill = memo(function Pill({ label, active, onPress }: PillProps) {
       variant="outline"
       size="sm"
       onPress={onPress}
-      rootClassName={cn(styles.pill, active ? styles.pillActive : styles.pillInactive)}
-      textClassName={active ? styles.pillTextActive : styles.pillTextInactive}
+      rootClassName={styles.pill}
+      textClassName={cn(active ? styles.pillTextActive : styles.pillTextInactive)}
     />
   );
 });
@@ -82,9 +82,7 @@ const styles = {
   headerWrap: 'px-6',
   listTitle: 'mb-2 text-3xl font-extrabold text-white',
   pillsRow: 'mb-2 flex-row mt-2',
-  pill: 'mr-2 rounded-xl border px-3 py-2',
-  pillActive: 'border-emerald-400 bg-emerald-500/10',
-  pillInactive: 'border-white/25 bg-white/10',
+  pill: 'mr-2 px-3 py-2',
   pillTextActive: 'font-extrabold text-emerald-300',
   pillTextInactive: 'font-semibold text-white',
   searchBarWrap: 'rounded-2xl overflow-hidden border border-white/20 mt-2 mb-1',

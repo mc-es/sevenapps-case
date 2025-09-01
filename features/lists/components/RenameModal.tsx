@@ -52,6 +52,7 @@ const RenameModal = (props: Props) => {
     cardBlurTint,
   } = { ...defaults, ...props };
   const { t } = useTranslation();
+
   const canSave = useMemo(() => value.trim().length > 0, [value]);
 
   const handleBackdropPress = useCallback(() => {

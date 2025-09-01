@@ -1,26 +1,29 @@
-import type { PropsWithChildren } from 'react';
+import { memo, type PropsWithChildren } from 'react';
 import { SafeAreaView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { cn } from '@/libs';
 
-interface ContainerProps {
+type Padding = {
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+};
+
+interface Props {
   className?: string;
-  padding?: { top?: number; bottom?: number; left?: number; right?: number };
+  padding?: Partial<Padding>;
   isFill?: boolean;
 }
 
-const Container = ({
-  children,
-  className,
-  padding,
-  isFill = true,
-}: PropsWithChildren<ContainerProps>) => {
+const Container = (props: PropsWithChildren<Props>) => {
+  const { children, className, padding, isFill = true } = props;
   const insets = useSafeAreaInsets();
 
   return (
     <SafeAreaView
-      className={cn(isFill && styles.container, className)}
+      className={cn(isFill && 'flex flex-1', className)}
       style={{
         paddingTop: (padding?.top ?? 0) + insets.top,
         paddingBottom: (padding?.bottom ?? 0) + insets.bottom,
@@ -33,8 +36,4 @@ const Container = ({
   );
 };
 
-export default Container;
-
-const styles = {
-  container: 'flex flex-1',
-} as const;
+export default memo(Container);
