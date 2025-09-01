@@ -12,10 +12,9 @@ import {
   View,
 } from 'react-native';
 
-import Button from '@/components/Button';
-import InputBox from '@/components/InputBox';
+import { Button, InputBox } from '@/components';
 
-type RenameModalProps = {
+interface RenameModalProps {
   title: string;
   placeholder: string;
   visible: boolean;
@@ -27,7 +26,7 @@ type RenameModalProps = {
   backdropBlurTint?: 'light' | 'dark' | 'default';
   cardBlurIntensity?: number;
   cardBlurTint?: 'light' | 'dark' | 'default';
-};
+}
 
 const defaults: Required<
   Pick<

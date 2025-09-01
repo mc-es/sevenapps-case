@@ -6,24 +6,45 @@
     "cancel": "Cancel",
     "add": "Add",
     "rename": "Rename",
-    "close": "Close"
+    "close": "Close",
+    "edit": "Edit",
+    "name": "Name",
+    "description": "Description",
+    "priority": "Priority",
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "search": "Search",
+    "all": "All",
+    "upcoming": "Upcoming",
+    "completed": "Completed"
   },
   "loading": {
-    "lists": "List is loading..."
+    "lists": "Lists are loading...",
+    "tasks": "Tasks are loading..."
   },
   "placeholder": {
     "list": "Search List",
-    "newName": "New Name"
+    "newName": "New Name",
+    "newTaskTitle": "Eg: Buy Basket",
+    "newTaskDescription": "Optional Description",
+    "searchTask": "Search Task"
   },
   "error": {
     "message": "There was an error...",
-    "tryAgain": "Try again"
+    "tryAgain": "Try again",
+    "invalidId": "Invalid Id"
   },
   "alert": {
     "error": "Error",
     "failedAddingList": "Adding a list failed.",
     "failedRenamingList": "Renaming the list failed.",
-    "failedDeletingList": "The process of deleting the list failed."
+    "failedDeletingList": "The process of deleting the list failed.",
+    "requiredName": "Name Required",
+    "failedUpdatingStatus": "The task situation could not be updated.",
+    "failedAddingTask": "Adding tasks failed.",
+    "failedUpdatingTask": "The task could not be updated.",
+    "failedDeletingTask": "The deletion process failed."
   },
   "landing": {
     "title": "Empty your mind, focus. Manage your duties with a fluent experience.",
@@ -50,6 +71,15 @@
     "noListMessage": "There is no list...",
     "addToListBtn": "Add List",
     "confirmDialogTitle": "This list will be deleted",
-    "confirmDialogMessage": "{{name}} will be permanently deleted."
+    "confirmDialogMessage": "The list {{name}} will be permanently deleted."
+  },
+  "tasks": {
+    "title": "Tasks",
+    "formModalTitle1": "Add Task",
+    "formModalTitle2": "Edit Task",
+    "noTaskMessage": "There is no task...",
+    "addToTaskBtn": "Add Task",
+    "confirmDialogTitle": "This task will be deleted",
+    "confirmDialogMessage": "The task {{name}} will be permanently deleted."
   }
 }

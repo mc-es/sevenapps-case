@@ -2,9 +2,7 @@ import '../global.css';
 
 import { Stack } from 'expo-router';
 
-import { DatabaseProvider } from '@/providers/database-provider';
-import { I18nProvider } from '@/providers/i18n-provider';
-import { ReactQueryProvider } from '@/providers/react-query';
+import { DatabaseProvider, I18nProvider, ReactQueryProvider } from '@/providers';
 
 export default function Layout() {
   return (
@@ -12,9 +10,9 @@ export default function Layout() {
       <ReactQueryProvider>
         <DatabaseProvider>
           <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="index" options={{ title: 'Landing' }} />
-            <Stack.Screen name="lists" options={{ title: 'Listeler' }} />
-            <Stack.Screen name="details" options={{ title: 'Liste Detayı' }} />
+            <Stack.Screen name="index" />
+            <Stack.Screen name="lists" />
+            <Stack.Screen name="details" />
           </Stack>
         </DatabaseProvider>
       </ReactQueryProvider>

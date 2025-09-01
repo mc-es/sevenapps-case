@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 import type { GestureResponderEvent } from 'react-native';
 import { Pressable, Text, View } from 'react-native';
 
-import Button from '@/components/Button';
-import { useTRDateTimeFormat } from '@/hooks/useTRDateTimeFormat';
+import { Button } from '@/components';
+import { useTRDateTimeFormat } from '@/hooks';
 import type { ListItem } from '@/types/lists';
 
 interface ListCardProps {

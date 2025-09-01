@@ -3,18 +3,17 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Text, View } from 'react-native';
 
-import BackgroundGradient from '@/components/BackgroundGradient';
-import Button from '@/components/Button';
-import ConfirmGlassDialog from '@/components/ConfirmGlassDialog';
-import Container from '@/components/Container';
-import GlassActionSheet from '@/components/GlassActionSheet';
-import useDebouncedValue from '@/hooks/useDebouncedValue';
+import {
+  BackgroundGradient,
+  Button,
+  ConfirmGlassDialog,
+  Container,
+  GlassActionSheet,
+} from '@/components';
+import { useDebouncedValue } from '@/hooks';
 
-import Header from '../components/Header';
-import ListBody from '../components/ListBody';
-import RecentListsStrip from '../components/RecentListsStrip';
-import RenameModal from '../components/RenameModal';
-import { useListsData } from '../hooks/useListsData';
+import { Header, ListBody, RecentListsStrip, RenameModal } from '../components';
+import { useListsData } from '../hooks';
 
 const ListsScreen = () => {
   const { t } = useTranslation();

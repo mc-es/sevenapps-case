@@ -2,7 +2,7 @@ import type { PropsWithChildren } from 'react';
 import { SafeAreaView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { cn } from '@/libs/cn';
+import { cn } from '@/libs';
 
 interface ContainerProps {
   className?: string;

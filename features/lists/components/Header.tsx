@@ -1,9 +1,9 @@
 import { BlurView } from 'expo-blur';
+import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 
-import Button from '@/components/Button';
-import InputBox from '@/components/InputBox';
+import { Button, InputBox } from '@/components';
 
 interface HeaderProps {
   search: string;
@@ -45,7 +45,7 @@ const Header = (props: HeaderProps) => {
   );
 };
 
-export default Header;
+export default memo(Header);
 
 const styles = {
   headerWrap: 'px-6',

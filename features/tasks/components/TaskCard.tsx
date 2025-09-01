@@ -1,107 +1,76 @@
-import { cn } from '@/libs/cn';
-import type { TaskItem } from '@/types/tasks';
 import { BlurView } from 'expo-blur';
 import { memo, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, Text, View } from 'react-native';
 
-type TaskCardProps = {
+import { Button } from '@/components';
+import { cn } from '@/libs';
+import type { TaskItem } from '@/types/tasks';
+
+interface TaskCardProps {
   item: TaskItem;
   onToggle: (task: TaskItem) => void;
   onEdit: (task: TaskItem) => void;
-  onDelete: (taskId: number) => void;
-  rootClassName?: string;
-  checkboxClassName?: string;
-  nameClassName?: string;
-  descriptionClassName?: string;
-  metaClassName?: string;
-  editBtnClassName?: string;
-  editTextClassName?: string;
-  deleteBtnClassName?: string;
-  deleteTextClassName?: string;
+  onDelete: (taskId: TaskItem) => void;
+  blurIntensity?: number;
+  blurTint?: 'light' | 'dark' | 'default';
+}
+
+const defaults: Required<Pick<TaskCardProps, 'blurIntensity' | 'blurTint'>> = {
+  blurIntensity: 30,
+  blurTint: 'light',
 };
 
-const TaskCard = ({
-  item,
-  onToggle,
-  onEdit,
-  onDelete,
-  rootClassName,
-  checkboxClassName,
-  nameClassName,
-  descriptionClassName,
-  metaClassName,
-  editBtnClassName,
-  editTextClassName,
-  deleteBtnClassName,
-  deleteTextClassName,
-}: TaskCardProps) => {
+const TaskCard = (props: TaskCardProps) => {
+  const { item, onToggle, onEdit, onDelete, blurIntensity, blurTint } = { ...defaults, ...props };
+  const { t } = useTranslation();
+
   const done = useMemo(() => !!item.is_completed, [item.is_completed]);
-  const statusLabel = useMemo(() => {
-    if (done) return 'completed';
-    return (item.status as string) ?? 'not_started';
-  }, [done, item.status]);
 
   return (
-    <BlurView intensity={30} tint="light" className="mb-3 overflow-hidden rounded-2xl">
+    <BlurView intensity={blurIntensity} tint={blurTint} className={styles.blur}>
       <Pressable
         onPress={() => onToggle(item)}
         accessibilityRole="button"
-        accessibilityLabel={`${item.name}, durum: ${statusLabel}`}
-        className={cn(styles.root, done ? styles.rootDone : styles.rootPending, rootClassName)}
-        style={({ pressed }) => [{ opacity: pressed ? 0.97 : 1 }]}
+        className={cn(styles.root, done ? styles.rootDone : '')}
+        style={({ pressed }) => [{ opacity: pressed ? 0.96 : 1 }]}
       >
-        <View className="flex-row items-center">
+        <View className={styles.row}>
           <View
-            className={cn(
-              styles.checkbox,
-              done ? styles.checkboxDone : styles.checkboxPending,
-              checkboxClassName,
-            )}
+            className={cn(styles.checkbox, done ? styles.checkboxDone : styles.checkboxPending)}
           >
             {done ? <Text className={styles.checkmark}>✓</Text> : null}
           </View>
-
-          <View className="flex-1">
-            <Text
-              numberOfLines={1}
-              className={cn(styles.name, done && styles.nameDone, nameClassName)}
-            >
+          <View className={styles.content}>
+            <Text numberOfLines={1} className={cn(styles.name, done && styles.nameDone)}>
               {item.name}
             </Text>
-
             {!!item.description && (
               <Text
                 numberOfLines={2}
-                className={cn(
-                  styles.description,
-                  done && styles.descriptionDone,
-                  descriptionClassName,
-                )}
+                className={cn(styles.description, done && styles.descriptionDone)}
               >
                 {item.description}
               </Text>
             )}
-
-            <Text className={cn(styles.meta, metaClassName)}>
-              durum: {statusLabel} • öncelik: {item.priority ?? 'none'}
-            </Text>
           </View>
-
           <View className={styles.actions}>
-            <Pressable
+            <Button
+              title={t('global.edit')}
+              variant="solid"
+              size="sm"
               onPress={() => onEdit(item)}
-              hitSlop={8}
-              className={cn(styles.editBtn, editBtnClassName)}
-            >
-              <Text className={cn(styles.editText, editTextClassName)}>Düzenle</Text>
-            </Pressable>
-            <Pressable
-              onPress={() => onDelete(item.id)}
-              hitSlop={8}
-              className={cn(styles.deleteBtn, deleteBtnClassName)}
-            >
-              <Text className={cn(styles.deleteText, deleteTextClassName)}>Sil</Text>
-            </Pressable>
+              textClassName={styles.editText}
+              colors={['#f59e0b', '#d97706']}
+            />
+            <Button
+              title={t('global.delete')}
+              variant="solid"
+              size="sm"
+              onPress={() => onDelete(item)}
+              textClassName={styles.deleteText}
+              colors={['#ec4899', '#8b5cf6']}
+            />
           </View>
         </View>
       </Pressable>
@@ -112,21 +81,20 @@ const TaskCard = ({
 export default memo(TaskCard);
 
 const styles = {
+  blur: 'mb-3 overflow-hidden rounded-2xl',
   root: 'bg-white/12 border border-white/20 px-3 py-3',
   rootDone: 'bg-emerald-500/10 border-emerald-400/30',
-  rootPending: '',
+  row: 'flex-row items-center',
   checkbox: 'mr-2 h-[22px] w-[22px] items-center justify-center rounded-md border-2 bg-white/10',
   checkboxDone: 'border-emerald-400',
   checkboxPending: 'border-white/40',
   checkmark: 'font-black text-emerald-400',
+  content: 'flex-1',
   name: 'font-semibold text-white',
   nameDone: 'line-through text-white/70',
   description: 'text-white/80',
   descriptionDone: 'line-through text-white/70',
-  meta: 'text-[11px] text-white/70 mt-0.5',
-  actions: 'ml-2 flex-row items-center',
-  editBtn: 'mr-1 px-2 py-1',
-  editText: 'font-bold text-emerald-300',
-  deleteBtn: 'px-2 py-1',
-  deleteText: 'font-bold text-rose-300',
+  actions: 'flex-row items-center gap-2',
+  editText: 'font-bold text-emerald-300 text-lg',
+  deleteText: 'text-rose-200 font-bold text-lg',
 } as const;

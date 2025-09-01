@@ -1,7 +1,8 @@
+import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, RefreshControl, Text } from 'react-native';
 
-import Button from '@/components/Button';
+import { Button } from '@/components';
 import type { ListItem } from '@/types/lists';
 
 import ListCard from './ListCard';
@@ -49,4 +50,4 @@ const ListBody = (props: ListBodyProps) => {
   );
 };
 
-export default ListBody;
+export default memo(ListBody);

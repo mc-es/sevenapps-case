@@ -1,7 +1,7 @@
 import { memo, useCallback } from 'react';
 import { Text, View } from 'react-native';
 
-import Button from '@/components/Button';
+import { Button } from '@/components';
 
 interface CTAProps {
   title: string;

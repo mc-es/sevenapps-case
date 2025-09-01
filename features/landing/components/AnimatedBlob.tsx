@@ -2,7 +2,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { memo } from 'react';
 import { Animated } from 'react-native';
 
-import { useLoop } from '../hooks/useLoop';
+import { useLoop } from '../hooks';
 
 interface AnimatedBlobProps {
   size: number;

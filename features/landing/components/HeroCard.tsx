@@ -3,7 +3,7 @@ import { BlurView } from 'expo-blur';
 import { memo, type ComponentProps } from 'react';
 import { Animated, Text, View } from 'react-native';
 
-import { usePulse } from '../hooks/usePulse';
+import { usePulse } from '../hooks';
 
 interface HeroCardProps {
   title: string;

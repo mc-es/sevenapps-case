@@ -2,7 +2,7 @@ import type { PropsWithChildren } from 'react';
 import { memo } from 'react';
 import { Animated, Easing } from 'react-native';
 
-import { useLoop } from '../hooks/useLoop';
+import { useLoop } from '../hooks';
 
 interface FloatingProps {
   delay?: number;

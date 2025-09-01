@@ -4,7 +4,7 @@ import { memo, useCallback } from 'react';
 import type { ListRenderItem } from 'react-native';
 import { FlatList, Pressable, Text, View } from 'react-native';
 
-import { useTRDateTimeFormat } from '@/hooks/useTRDateTimeFormat';
+import { useTRDateTimeFormat } from '@/hooks';
 import type { ListItem } from '@/types/lists';
 
 type RecentListsStripProps = {

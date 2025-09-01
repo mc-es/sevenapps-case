@@ -4,13 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { Text, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import BackgroundGradient from '@/components/BackgroundGradient';
-import Container from '@/components/Container';
+import { BackgroundGradient, Container } from '@/components';
 
-import AnimatedBlob from '../components/AnimatedBlob';
-import CTA from '../components/CTA';
-import Floating from '../components/Floating';
-import HeroCard from '../components/HeroCard';
+import { AnimatedBlob, CTA, Floating, HeroCard } from '../components';
 
 const LandingScreen = () => {
   const { t } = useTranslation();

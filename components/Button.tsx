@@ -1,8 +1,9 @@
-import { cn } from '@/libs/cn';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { memo } from 'react';
 import type { GestureResponderEvent } from 'react-native';
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+
+import { cn } from '@/libs';
 
 type ColorTuple = readonly [string, string, ...string[]];
 

@@ -1,7 +1,8 @@
-import { changeLanguage } from '@/i18n';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, Text, View } from 'react-native';
+
+import { changeLanguage } from '@/i18n';
 
 const LanguageSwitcher = () => {
   const { i18n } = useTranslation();
