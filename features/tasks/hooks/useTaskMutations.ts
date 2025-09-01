@@ -2,12 +2,14 @@ import type { UseMutationResult } from '@tanstack/react-query';
 import { useMutation, useQueryClient, type QueryKey } from '@tanstack/react-query';
 
 import { createTask, deleteTask, toggleTaskCompletion, updateTask } from '@/queries';
-import type { Priority, TaskItem } from '@/types/tasks';
+import type { TaskItem } from '@/types/tasks';
 
-type ToggleVars = { id: number; next: boolean };
-type CreateVars = { name: string; description?: string; priority: Priority };
-type EditVars = { id: number; name: string; description?: string; priority: Priority };
+type ToggleVars = Pick<TaskItem, 'id'> & { next: boolean };
+type CreateVars = Pick<TaskItem, 'name' | 'priority'> &
+  Partial<Pick<TaskItem, 'description' | 'due_date'>>;
+type EditVars = Omit<TaskItem, 'list_id'>;
 type DeleteVars = number;
+type SetStatusVars = Pick<TaskItem, 'id' | 'status'>;
 type Ctx = { prev: TaskItem[] };
 
 interface Response {
@@ -15,6 +17,7 @@ interface Response {
   create: UseMutationResult<unknown, unknown, CreateVars, Ctx | undefined>;
   edit: UseMutationResult<unknown, unknown, EditVars, Ctx | undefined>;
   remove: UseMutationResult<unknown, unknown, DeleteVars, Ctx | undefined>;
+  setStatus: UseMutationResult<unknown, unknown, SetStatusVars, Ctx | undefined>;
 }
 
 const useTaskMutations = (listId: number, key: QueryKey): Response => {
@@ -30,7 +33,7 @@ const useTaskMutations = (listId: number, key: QueryKey): Response => {
           ? {
               ...t,
               is_completed: next,
-              status: next ? 'completed' : (t.status ?? 'not_started'),
+              status: next ? 'completed' : 'not_started',
               updated_at: new Date().toISOString(),
             }
           : t,
@@ -45,23 +48,25 @@ const useTaskMutations = (listId: number, key: QueryKey): Response => {
   });
 
   const create = useMutation({
-    mutationFn: (p: { name: string; description?: string; priority: Priority }) =>
+    mutationFn: (p: CreateVars) =>
       createTask({
         name: p.name,
         description: p.description,
         priority: p.priority,
+        due_date: p.due_date,
         status: 'not_started',
         is_completed: false,
         list_id: listId,
       }),
     onMutate: async (p) => {
       await qc.cancelQueries({ queryKey: key });
-      const prev = (qc.getQueryData(key) as TaskItem[]) ?? [];
+      const prev = qc.getQueryData(key) as TaskItem[];
       const optimistic: TaskItem = {
         id: Math.floor(Math.random() * 1e9),
         name: p.name,
         description: p.description,
         status: 'not_started',
+        due_date: p.due_date,
         priority: p.priority,
         is_completed: false,
         created_at: new Date().toISOString(),
@@ -78,22 +83,24 @@ const useTaskMutations = (listId: number, key: QueryKey): Response => {
   });
 
   const edit = useMutation({
-    mutationFn: (p: { id: number; name: string; description?: string; priority: Priority }) =>
+    mutationFn: (p: EditVars) =>
       updateTask(p.id, {
         name: p.name,
         description: p.description,
         priority: p.priority,
+        due_date: p.due_date,
       }),
     onMutate: async (p) => {
       await qc.cancelQueries({ queryKey: key });
-      const prev = (qc.getQueryData(key) as TaskItem[]) ?? [];
+      const prev = qc.getQueryData(key) as TaskItem[];
       const next = prev.map((t) =>
         t.id === p.id
           ? {
               ...t,
               name: p.name,
-              description: p.description ?? null,
+              description: p.description,
               priority: p.priority,
+              due_date: p.due_date,
               updated_at: new Date().toISOString(),
             }
           : t,
@@ -124,7 +131,35 @@ const useTaskMutations = (listId: number, key: QueryKey): Response => {
     onSettled: () => qc.invalidateQueries({ queryKey: key }),
   });
 
-  return { toggle, create, edit, remove };
+  const setStatus = useMutation({
+    mutationFn: ({ id, status }: SetStatusVars) =>
+      updateTask(id, {
+        status,
+        is_completed: status === 'completed',
+      }),
+    onMutate: async ({ id, status }) => {
+      await qc.cancelQueries({ queryKey: key });
+      const prev = (qc.getQueryData(key) as TaskItem[]) ?? [];
+      const next = prev.map((t) =>
+        t.id === id
+          ? {
+              ...t,
+              status,
+              is_completed: status === 'completed',
+              updated_at: new Date().toISOString(),
+            }
+          : t,
+      );
+      qc.setQueryData(key, next);
+      return { prev };
+    },
+    onError: (_e, _v, ctx) => {
+      if (ctx?.prev) qc.setQueryData(key, ctx.prev);
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: key }),
+  });
+
+  return { toggle, create, edit, remove, setStatus };
 };
 
 export { useTaskMutations };

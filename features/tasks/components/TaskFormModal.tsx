@@ -1,3 +1,4 @@
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { BlurView } from 'expo-blur';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -23,8 +24,13 @@ interface Props {
   visible: boolean;
   mode: Mode;
   onClose: () => void;
-  onSubmit: (payload: { name: string; description?: string; priority: Priority }) => void;
-  initial?: Partial<Pick<TaskItem, 'name' | 'description' | 'priority'>>;
+  onSubmit: (payload: {
+    name: string;
+    description?: string;
+    priority: Priority;
+    due_date?: string | null;
+  }) => void;
+  initial?: Partial<Pick<TaskItem, 'name' | 'description' | 'priority' | 'due_date'>>;
   backdropOpacity?: number;
   intensity?: number;
 }
@@ -44,9 +50,14 @@ const TaskFormModal = (props: Props) => {
     ...props,
   };
   const { t } = useTranslation();
+
   const [name, setName] = useState(initial?.name ?? '');
   const [desc, setDesc] = useState(initial?.description ?? '');
   const [priority, setPriority] = useState<Priority>((initial?.priority as Priority) ?? 'medium');
+  const [due, setDue] = useState<Date | null>(
+    initial?.due_date ? new Date(initial.due_date) : null,
+  );
+  const [showPicker, setShowPicker] = useState(false);
   const [touched, setTouched] = useState(false);
 
   useEffect(() => {
@@ -54,9 +65,11 @@ const TaskFormModal = (props: Props) => {
       setName(initial?.name ?? '');
       setDesc(initial?.description ?? '');
       setPriority((initial?.priority as Priority) ?? 'medium');
+      setDue(initial?.due_date ? new Date(initial.due_date) : null);
       setTouched(false);
+      setShowPicker(false);
     }
-  }, [visible, initial?.name, initial?.description, initial?.priority]);
+  }, [visible, initial?.name, initial?.description, initial?.priority, initial?.due_date]);
 
   const { open, backdropStyle, cardStyle } = useInOutAnimation({
     visible,
@@ -68,7 +81,7 @@ const TaskFormModal = (props: Props) => {
   const trimmedName = name.trim();
   const nameError = useMemo(
     () => (touched && trimmedName.length === 0 ? t('alert.requiredName') : ''),
-    [touched, trimmedName],
+    [touched, trimmedName, t],
   );
   const canSubmit = trimmedName.length > 0;
 
@@ -77,14 +90,26 @@ const TaskFormModal = (props: Props) => {
       setTouched(true);
       return;
     }
-    onSubmit({ name: trimmedName, description: desc.trim(), priority });
+    onSubmit({
+      name: trimmedName,
+      description: desc.trim(),
+      priority,
+      due_date: due ? due.toISOString() : null,
+    });
     onClose();
-  }, [canSubmit, desc, onClose, onSubmit, priority, trimmedName]);
+  }, [canSubmit, desc, due, onClose, onSubmit, priority, trimmedName]);
 
   const handleBackdropPress = useCallback(() => onClose(), [onClose]);
   const stopPropagation = useCallback((e: GestureResponderEvent) => e?.stopPropagation?.(), []);
 
+  const onChangeDate = useCallback((_: unknown, selected?: Date) => {
+    if (Platform.OS === 'android') setShowPicker(false);
+    if (selected) setDue(selected);
+  }, []);
+
   if (!open) return null;
+
+  const dateLabel = due ? new Date(due).toLocaleDateString() : t('global.pickDate');
 
   return (
     <Modal animationType="none" transparent visible onRequestClose={onClose} statusBarTranslucent>
@@ -155,6 +180,37 @@ const TaskFormModal = (props: Props) => {
                   );
                 })}
               </View>
+              <View className={styles.dateContainer}>
+                <Text className={styles.label}>{t('global.dueDate')}</Text>
+                <View className={styles.dueDateContainer}>
+                  <Button
+                    title={dateLabel}
+                    variant="outline"
+                    onPress={() => setShowPicker(true)}
+                    rootClassName="px-3 py-2"
+                    textClassName="font-semibold text-white"
+                  />
+                  {!!due && (
+                    <Button
+                      title={t('global.clear')}
+                      variant="outline"
+                      onPress={() => setDue(null)}
+                      rootClassName="px-3 py-2"
+                      textClassName="font-semibold text-white/90"
+                    />
+                  )}
+                </View>
+                {showPicker && (
+                  <View className="mb-2">
+                    <DateTimePicker
+                      value={due ?? new Date()}
+                      mode="date"
+                      display={Platform.select({ ios: 'inline', android: 'default' })}
+                      onChange={onChangeDate}
+                    />
+                  </View>
+                )}
+              </View>
               <View className={styles.actions}>
                 <Button
                   title={t('global.cancel')}
@@ -197,5 +253,7 @@ const styles = {
   priorityBtn: 'mr-2 px-3 py-2',
   priorityTextActive: 'font-extrabold text-emerald-300',
   priorityTextInactive: 'font-semibold text-white',
+  dateContainer: 'mt-2',
+  dueDateContainer: 'mb-1 flex-row items-center gap-2',
   actions: 'mt-3 flex-row justify-end gap-3',
 } as const;

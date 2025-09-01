@@ -1,4 +1,4 @@
-import type { Priority, TaskItem } from '@/types/tasks';
+import type { Priority, Status, TaskItem } from '@/types/tasks';
 
 import { useTaskMutations } from './useTaskMutations';
 import { useTaskSelectors } from './useTaskSelectors';
@@ -25,12 +25,14 @@ interface Response {
   createTask: (p: { name: string; description?: string; priority: Priority }) => void;
   editTask: (p: { id: number; name: string; description?: string; priority: Priority }) => void;
   deleteTask: (id: number) => void;
+  setTaskStatus: (p: { id: number; status: Status }) => void;
 }
 
 const useTasksData = ({ listId, search, tab, priorityFilter }: Params): Response => {
   const q = useTasksQueries(listId);
   const m = useTaskMutations(listId, q.key);
-  const s = useTaskSelectors(q.tasks, {
+  const s = useTaskSelectors({
+    tasks: q.tasks,
     search,
     tab,
     priority: priorityFilter,
@@ -47,6 +49,7 @@ const useTasksData = ({ listId, search, tab, priorityFilter }: Params): Response
     createTask: (p) => m.create.mutate(p),
     editTask: (p) => m.edit.mutate(p),
     deleteTask: (id: number) => m.remove.mutate(id),
+    setTaskStatus: ({ id, status }) => m.setStatus.mutate({ id, status }),
   };
 };
 

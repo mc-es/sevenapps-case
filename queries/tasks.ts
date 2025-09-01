@@ -217,10 +217,12 @@ export const deleteTask = async (id: number) => {
  */
 export const toggleTaskCompletion = async (id: number, isCompleted: boolean) => {
   await simulateNetworkLatency();
+  const nextStatus = isCompleted ? 'completed' : 'not_started';
   return db
     .update(tasks)
     .set({
       is_completed: isCompleted,
+      status: nextStatus,
       updated_at: new Date().toISOString(),
     })
     .where(eq(tasks.id, id))

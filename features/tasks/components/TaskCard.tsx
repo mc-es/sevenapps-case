@@ -5,13 +5,14 @@ import { Pressable, Text, View } from 'react-native';
 
 import { Button } from '@/components';
 import { cn } from '@/libs';
-import type { TaskItem } from '@/types/tasks';
+import type { Status, TaskItem } from '@/types/tasks';
 
 interface Props {
   item: TaskItem;
   onToggle: (task: TaskItem) => void;
   onEdit: (task: TaskItem) => void;
   onDelete: (task: TaskItem) => void;
+  onSetStatus: (task: TaskItem, status: Status) => void;
   blurIntensity?: number;
   blurTint?: 'light' | 'dark' | 'default';
 }
@@ -22,7 +23,10 @@ const defaults: Required<Pick<Props, 'blurIntensity' | 'blurTint'>> = {
 };
 
 const TaskCard = (props: Props) => {
-  const { item, onToggle, onEdit, onDelete, blurIntensity, blurTint } = { ...defaults, ...props };
+  const { item, onToggle, onEdit, onDelete, onSetStatus, blurIntensity, blurTint } = {
+    ...defaults,
+    ...props,
+  };
   const { t } = useTranslation();
 
   const done = useMemo(() => !!item.is_completed, [item.is_completed]);
@@ -55,6 +59,19 @@ const TaskCard = (props: Props) => {
             )}
           </View>
           <View className={styles.actions}>
+            {!done && (
+              <Button
+                title={item.status === 'in_progress' ? t('global.pause') : t('global.start')}
+                variant="solid"
+                size="sm"
+                onPress={() =>
+                  onSetStatus(item, item.status === 'in_progress' ? 'not_started' : 'in_progress')
+                }
+                textClassName="text-white font-bold"
+                colors={['#3b82f6', '#2563eb']}
+              />
+            )}
+
             <Button
               title={t('global.edit')}
               variant="solid"

@@ -57,7 +57,7 @@ const Header = (props: Props) => {
       <Text className={styles.listTitle}>{title}</Text>
       <View className={styles.pillsRow}>
         {Tabs.map((k) => (
-          <Pill key={k} label={t(`global.${[k]}`)} active={tab === k} onPress={onPressTab(k)} />
+          <Pill key={k} label={t(`global.${k}`)} active={tab === k} onPress={onPressTab(k)} />
         ))}
       </View>
       <BlurView intensity={blurIntensity} tint={blurTint} className={styles.searchBarWrap}>

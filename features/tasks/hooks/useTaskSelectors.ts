@@ -4,15 +4,19 @@ import type { Priority, TaskItem } from '@/types/tasks';
 
 import type { TabKey } from './useTasksData';
 
+interface Params {
+  tasks: TaskItem[];
+  search: string;
+  tab: TabKey;
+  priority: Priority | null;
+}
+
 interface Response {
   displayTasks: TaskItem[];
   completedCount: number;
 }
 
-const useTaskSelectors = (
-  tasks: TaskItem[],
-  { search, tab, priority }: { search: string; tab: TabKey; priority: Priority | null },
-): Response =>
+const useTaskSelectors = ({ tasks, search, tab, priority }: Params): Response =>
   useMemo<Response>(() => {
     let arr = [...tasks];
 

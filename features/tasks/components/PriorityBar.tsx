@@ -13,7 +13,8 @@ interface Props {
   onChange: (p: Priority | null) => void;
 }
 
-const PriorityBar = ({ value, onChange }: Props) => {
+const PriorityBar = (props: Props) => {
+  const { value, onChange } = props;
   const { t } = useTranslation();
 
   return (

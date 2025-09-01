@@ -8,7 +8,7 @@ import { ActivityIndicator, Text, View } from 'react-native';
 import { Button, ConfirmDialog, Container, GradientBackground } from '@/components';
 import { useDebouncedValue } from '@/hooks';
 import { getListById, listsKeys } from '@/queries';
-import type { Priority, TaskItem } from '@/types/tasks';
+import type { Priority, Status, TaskItem } from '@/types/tasks';
 
 import { Header, PriorityBar, TaskBody, TaskFormModal } from '../components';
 import { useTasksData } from '../hooks';
@@ -43,6 +43,7 @@ const TasksScreen = () => {
     createTask,
     editTask,
     deleteTask,
+    setTaskStatus,
   } = useTasksData({
     listId,
     search: debounced,
@@ -53,22 +54,10 @@ const TasksScreen = () => {
 
   const tasksForRender = useMemo(() => {
     let arr = [...displayTasks];
-
     if (priorityFilter)
       arr = arr.filter((task) => (task.priority as Priority | undefined) === priorityFilter);
-
-    const nowIso = new Date().toISOString();
-
-    if (tab === 'upcoming') {
-      arr = arr.filter((task) => !!task.due_date && task.due_date > nowIso && !task.is_completed);
-      arr.sort((a, b) => (a.due_date! > b.due_date! ? 1 : -1));
-    } else if (tab === 'completed') {
-      arr = arr.filter((task) => !!task.is_completed);
-      arr.sort((a, b) => (b.updated_at ?? '').localeCompare(a.updated_at ?? ''));
-    }
-
     return arr;
-  }, [displayTasks, priorityFilter, tab]);
+  }, [displayTasks, priorityFilter]);
 
   const [createVisible, setCreateVisible] = useState(false);
   const [editVisible, setEditVisible] = useState(false);
@@ -110,6 +99,7 @@ const TasksScreen = () => {
     content = (
       <TaskBody
         tasks={tasksForRender}
+        tab={tab}
         completedCount={completedCount}
         isRefetching={isRefetching}
         refetchAll={refetchAll}
@@ -120,6 +110,7 @@ const TasksScreen = () => {
           setSelectedTask(item);
           setConfirmVisible(true);
         }}
+        onSetStatus={(item, status: Status) => setTaskStatus({ id: item.id, status })}
       />
     );
   }
@@ -148,8 +139,9 @@ const TasksScreen = () => {
         mode="edit"
         initial={{
           name: editing?.name,
-          description: editing?.description ?? '',
-          priority: (editing?.priority as Priority) ?? 'medium',
+          description: editing?.description,
+          priority: editing?.priority,
+          due_date: editing?.due_date,
         }}
         onClose={() => setEditVisible(false)}
         onSubmit={(p) => {
