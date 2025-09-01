@@ -12,7 +12,7 @@ export default function Layout() {
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="index" />
             <Stack.Screen name="lists" />
-            <Stack.Screen name="details" />
+            <Stack.Screen name="tasks" />
           </Stack>
         </DatabaseProvider>
       </ReactQueryProvider>

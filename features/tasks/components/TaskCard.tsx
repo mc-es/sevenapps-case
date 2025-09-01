@@ -11,7 +11,7 @@ interface Props {
   item: TaskItem;
   onToggle: (task: TaskItem) => void;
   onEdit: (task: TaskItem) => void;
-  onDelete: (taskId: TaskItem) => void;
+  onDelete: (task: TaskItem) => void;
   blurIntensity?: number;
   blurTint?: 'light' | 'dark' | 'default';
 }

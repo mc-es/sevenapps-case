@@ -1,3 +1,4 @@
+import { BlurView } from 'expo-blur';
 import { memo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
@@ -14,6 +15,8 @@ interface Props {
   onChangeTab: (t: TabKey) => void;
   search: string;
   onChangeSearch: (v: string) => void;
+  blurIntensity?: number;
+  blurTint?: 'light' | 'dark' | 'default';
 }
 
 interface PillProps {
@@ -21,6 +24,11 @@ interface PillProps {
   active: boolean;
   onPress: () => void;
 }
+
+const defaults: Required<Pick<Props, 'blurIntensity' | 'blurTint'>> = {
+  blurIntensity: 30,
+  blurTint: 'light',
+};
 
 const Pill = memo(function Pill({ label, active, onPress }: PillProps) {
   return (
@@ -36,7 +44,10 @@ const Pill = memo(function Pill({ label, active, onPress }: PillProps) {
 });
 
 const Header = (props: Props) => {
-  const { title, tab, onChangeTab, search, onChangeSearch } = props;
+  const { title, tab, onChangeTab, search, onChangeSearch, blurIntensity, blurTint } = {
+    ...defaults,
+    ...props,
+  };
   const { t } = useTranslation();
 
   const onPressTab = useCallback((k: TabKey) => () => onChangeTab(k), [onChangeTab]);
@@ -49,17 +60,18 @@ const Header = (props: Props) => {
           <Pill key={k} label={t(`global.${[k]}`)} active={tab === k} onPress={onPressTab(k)} />
         ))}
       </View>
-      <View>
-        <Text className={styles.searchLabel}>{t('global.search')}</Text>
-        <InputBox
-          value={search}
-          onChangeText={onChangeSearch}
-          placeholder={t('placeholder.searchTask')}
-          className={styles.searchInput}
-          placeholderTextColor="rgba(229,231,235,0.7)"
-          returnKeyType="search"
-        />
-      </View>
+      <BlurView intensity={blurIntensity} tint={blurTint} className={styles.searchBarWrap}>
+        <View className={styles.searchBarInner}>
+          <InputBox
+            value={search}
+            onChangeText={onChangeSearch}
+            placeholder={t('placeholder.list')}
+            variant="glass"
+            containerClassName="flex-1"
+            inputClassName="px-2"
+          />
+        </View>
+      </BlurView>
     </View>
   );
 };
@@ -75,6 +87,6 @@ const styles = {
   pillInactive: 'border-white/25 bg-white/10',
   pillTextActive: 'font-extrabold text-emerald-300',
   pillTextInactive: 'font-semibold text-white',
-  searchLabel: 'mb-1 font-semibold text-white',
-  searchInput: 'w-full mb-2 rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-white',
+  searchBarWrap: 'rounded-2xl overflow-hidden border border-white/20 mt-2 mb-1',
+  searchBarInner: 'bg-white/10 px-3 py-2 flex-row items-center',
 } as const;

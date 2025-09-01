@@ -12,14 +12,14 @@ interface Props {
   completedCount: number;
   isRefetching: boolean;
   refetchAll: () => void;
-  onAdd: () => void;
   onToggle: (task: TaskItem) => void;
   onEdit: (task: TaskItem) => void;
-  onDelete: (taskId: TaskItem) => void;
+  onDelete: (task: TaskItem) => void;
+  onAdd?: () => void;
 }
 
 const TaskBody = (props: Props) => {
-  const { tasks, completedCount, isRefetching, refetchAll, onAdd, onToggle, onEdit, onDelete } =
+  const { tasks, completedCount, isRefetching, refetchAll, onToggle, onEdit, onDelete, onAdd } =
     props;
   const { t } = useTranslation();
 

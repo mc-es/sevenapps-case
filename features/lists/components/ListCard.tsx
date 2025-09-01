@@ -45,7 +45,7 @@ const ListCard = (props: Props) => {
 
   return (
     <BlurView intensity={blurIntensity} tint={blurTint} className={styles.blur}>
-      <Link href={{ pathname: '/details', params: { id: String(item.id) } }} asChild>
+      <Link href={{ pathname: '/tasks', params: { id: String(item.id) } }} asChild>
         <Pressable
           onLongPress={onLongPress}
           accessibilityRole="button"
