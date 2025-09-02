@@ -1,11 +1,11 @@
 import { useQuery, type QueryKey } from '@tanstack/react-query';
 
 import { getTasksByListId, tasksKeys } from '@/queries';
-import type { TaskItem } from '@/types/tasks';
+import type { TaskDto } from '@/validations';
 
 interface Response {
   key: QueryKey;
-  tasks: TaskItem[];
+  tasks: TaskDto[];
   isLoading: boolean;
   isError: boolean;
   isRefetching: boolean;
@@ -13,22 +13,24 @@ interface Response {
 }
 
 const useTasksQueries = (listId: number): Response => {
-  const key = tasksKeys.byList(listId) as QueryKey;
+  const key: QueryKey = tasksKeys.byList(listId);
 
-  const listTasksQ = useQuery({
+  const q = useQuery<TaskDto[]>({
     queryKey: key,
-    queryFn: () => getTasksByListId(listId),
+    queryFn: () => getTasksByListId({ list_id: listId }),
     enabled: Number.isFinite(listId),
     staleTime: 10_000,
+    placeholderData: (prev) => prev,
+    refetchOnWindowFocus: false,
   });
 
   return {
     key,
-    tasks: (listTasksQ.data as TaskItem[]) ?? [],
-    isLoading: listTasksQ.isLoading,
-    isError: listTasksQ.isError,
-    isRefetching: listTasksQ.isRefetching,
-    refetch: () => listTasksQ.refetch(),
+    tasks: q.data ?? [],
+    isLoading: q.isLoading,
+    isError: q.isError,
+    isRefetching: q.isRefetching,
+    refetch: () => q.refetch(),
   };
 };
 

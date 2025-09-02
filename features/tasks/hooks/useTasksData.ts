@@ -1,4 +1,4 @@
-import type { Priority, Status, TaskItem } from '@/types/tasks';
+import type { Priority, Status, TaskCreate, TaskDto, TaskUpdate } from '@/validations';
 
 import { useTaskMutations } from './useTaskMutations';
 import { useTaskSelectors } from './useTaskSelectors';
@@ -10,20 +10,19 @@ interface Params {
   listId: number;
   search: string;
   tab: TabKey;
-  statusFilter?: string | null;
   priorityFilter: Priority | null;
 }
 
 interface Response {
-  displayTasks: TaskItem[];
+  displayTasks: TaskDto[];
   completedCount: number;
   isAnyLoading: boolean;
   isAnyError: boolean;
   isRefetching: boolean;
   refetchAll: () => void;
-  toggleTask: (task: TaskItem) => void;
-  createTask: (p: { name: string; description?: string; priority: Priority }) => void;
-  editTask: (p: { id: number; name: string; description?: string; priority: Priority }) => void;
+  toggleTask: (task: TaskDto) => void;
+  createTask: (p: Omit<TaskCreate, 'list_id'>) => void;
+  editTask: (p: TaskUpdate) => void;
   deleteTask: (id: number) => void;
   setTaskStatus: (p: { id: number; status: Status }) => void;
 }
@@ -45,10 +44,24 @@ const useTasksData = ({ listId, search, tab, priorityFilter }: Params): Response
     isAnyError: q.isError,
     isRefetching: q.isRefetching,
     refetchAll: () => q.refetch(),
-    toggleTask: (task: TaskItem) => m.toggle.mutate({ id: task.id, next: !task.is_completed }),
-    createTask: (p) => m.create.mutate(p),
-    editTask: (p) => m.edit.mutate(p),
-    deleteTask: (id: number) => m.remove.mutate(id),
+    toggleTask: (task) => m.toggle.mutate({ id: task.id, is_completed: !task.is_completed }),
+    createTask: (p) =>
+      m.create.mutate({
+        name: p.name,
+        description: p.description,
+        priority: p.priority,
+        due_date: p.due_date,
+      }),
+    editTask: (p) =>
+      m.edit.mutate({
+        id: p.id,
+        name: p.name,
+        description: p.description,
+        priority: p.priority,
+        status: p.status,
+        due_date: p.due_date,
+      }),
+    deleteTask: (id: number) => m.remove.mutate({ id }),
     setTaskStatus: ({ id, status }) => m.setStatus.mutate({ id, status }),
   };
 };

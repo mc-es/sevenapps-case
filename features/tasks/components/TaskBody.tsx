@@ -3,21 +3,21 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, RefreshControl, Text, View } from 'react-native';
 
 import { Button } from '@/components';
-import type { Status, TaskItem } from '@/types/tasks';
+import type { Status, TaskDto } from '@/validations';
 
 import StatusBadge from './StatusBadge';
 import TaskCard from './TaskCard';
 
 interface Props {
-  tasks: TaskItem[];
+  tasks: TaskDto[];
   tab: 'all' | 'upcoming' | 'completed';
   completedCount: number;
   isRefetching: boolean;
   refetchAll: () => void;
-  onToggle: (task: TaskItem) => void;
-  onEdit: (task: TaskItem) => void;
-  onDelete: (task: TaskItem) => void;
-  onSetStatus: (task: TaskItem, status: Status) => void;
+  onToggle: (task: TaskDto) => void;
+  onEdit: (task: TaskDto) => void;
+  onDelete: (task: TaskDto) => void;
+  onSetStatus: (task: TaskDto, status: Status) => void;
   onAdd?: () => void;
 }
 

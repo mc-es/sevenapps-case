@@ -8,7 +8,7 @@ import { ActivityIndicator, Text, View } from 'react-native';
 import { Button, ConfirmDialog, Container, GradientBackground } from '@/components';
 import { useDebouncedValue } from '@/hooks';
 import { getListById, listsKeys } from '@/queries';
-import type { Priority, Status, TaskItem } from '@/types/tasks';
+import type { Priority, Status, TaskDto } from '@/validations';
 
 import { Header, PriorityBar, TaskBody, TaskFormModal } from '../components';
 import { useTasksData } from '../hooks';
@@ -21,7 +21,7 @@ const TasksScreen = () => {
 
   const listQ = useQuery({
     queryKey: [...listsKeys.all, 'detail', listId],
-    queryFn: () => getListById(listId),
+    queryFn: () => getListById({ id: listId }),
     enabled: validListId,
     staleTime: 30_000,
   });
@@ -48,7 +48,6 @@ const TasksScreen = () => {
     listId,
     search: debounced,
     tab,
-    statusFilter: null,
     priorityFilter,
   });
 
@@ -61,12 +60,12 @@ const TasksScreen = () => {
 
   const [createVisible, setCreateVisible] = useState(false);
   const [editVisible, setEditVisible] = useState(false);
-  const [editing, setEditing] = useState<TaskItem | null>(null);
+  const [editing, setEditing] = useState<TaskDto | null>(null);
 
   const [confirmVisible, setConfirmVisible] = useState(false);
-  const [selectedTask, setSelectedTask] = useState<TaskItem | null>(null);
+  const [selectedTask, setSelectedTask] = useState<TaskDto | null>(null);
 
-  const openEdit = useCallback((item: TaskItem) => {
+  const openEdit = useCallback((item: TaskDto) => {
     setEditing(item);
     setEditVisible(true);
   }, []);

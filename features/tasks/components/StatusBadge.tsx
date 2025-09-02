@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { Text, View } from 'react-native';
 
 import { cn } from '@/libs';
-import type { Status } from '@/types/tasks';
+import type { Status } from '@/validations';
 
 interface Props {
   status?: Status | null;

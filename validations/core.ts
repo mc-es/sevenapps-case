@@ -3,6 +3,7 @@ import { z, ZodError } from 'zod';
 const zNumber = z.number().int().positive();
 const zRequiredString = z.string().trim().min(1, 'Necessary').max(100, 'Too long');
 const zOptionalString = z.string().trim().optional();
+const zNullableString = z.string().nullable().optional();
 const zBoolean = z.boolean().optional();
 
 const parseOrThrow = <T>(schema: z.ZodType<T>, data: unknown): T => {
@@ -33,6 +34,7 @@ export {
   validateInput,
   validateOutput,
   zBoolean,
+  zNullableString,
   zNumber,
   zOptionalString,
   zRequiredString,

@@ -5,14 +5,14 @@ import { Pressable, Text, View } from 'react-native';
 
 import { Button } from '@/components';
 import { cn } from '@/libs';
-import type { Status, TaskItem } from '@/types/tasks';
+import type { Status, TaskDto } from '@/validations';
 
 interface Props {
-  item: TaskItem;
-  onToggle: (task: TaskItem) => void;
-  onEdit: (task: TaskItem) => void;
-  onDelete: (task: TaskItem) => void;
-  onSetStatus: (task: TaskItem, status: Status) => void;
+  item: TaskDto;
+  onToggle: (task: TaskDto) => void;
+  onEdit: (task: TaskDto) => void;
+  onDelete: (task: TaskDto) => void;
+  onSetStatus: (task: TaskDto, status: Status) => void;
   intensity?: number;
   tint?: 'light' | 'dark' | 'default';
 }

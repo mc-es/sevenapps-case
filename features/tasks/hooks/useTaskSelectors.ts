@@ -1,18 +1,18 @@
 import { useMemo } from 'react';
 
-import type { Priority, TaskItem } from '@/types/tasks';
+import type { Priority, TaskDto } from '@/validations';
 
 import type { TabKey } from './useTasksData';
 
 interface Params {
-  tasks: TaskItem[];
+  tasks: TaskDto[];
   search: string;
   tab: TabKey;
   priority: Priority | null;
 }
 
 interface Response {
-  displayTasks: TaskItem[];
+  displayTasks: TaskDto[];
   completedCount: number;
 }
 

@@ -16,7 +16,7 @@ import {
 import { Button, InputBox } from '@/components';
 import { useInOutAnimation } from '@/hooks';
 import { cn } from '@/libs';
-import type { Priority, TaskItem } from '@/types/tasks';
+import type { Priority, TaskDto } from '@/validations';
 
 type Mode = 'create' | 'edit';
 
@@ -30,7 +30,7 @@ interface Props {
     priority: Priority;
     due_date?: string | null;
   }) => void;
-  initial?: Partial<Pick<TaskItem, 'name' | 'description' | 'priority' | 'due_date'>>;
+  initial?: Partial<Pick<TaskDto, 'name' | 'description' | 'priority' | 'due_date'>>;
   backdropOpacity?: number;
   intensity?: number;
 }

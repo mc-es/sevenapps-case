@@ -4,7 +4,7 @@ import { View } from 'react-native';
 
 import { Button } from '@/components';
 import { cn } from '@/libs';
-import type { Priority } from '@/types/tasks';
+import type { Priority } from '@/validations';
 
 const Priority: Priority[] = ['low', 'medium', 'high'];
 
