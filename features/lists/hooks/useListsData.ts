@@ -1,17 +1,17 @@
-import type { ListItem } from '@/types/lists';
+import type { ListDto } from '@/validations';
 
 import { useAllListsQuery } from './useAllListsQuery';
 import { useListMutations } from './useListMutations';
 import { useRecentListsQuery } from './useRecentListsQuery';
 
 interface Params {
-  debouncedSearch: string;
+  search: string;
   recentLimit?: number;
 }
 
 interface Response {
-  lists: ListItem[];
-  recentLists: ListItem[];
+  lists: ListDto[];
+  recentLists: ListDto[];
   isLoading: boolean;
   isError: boolean;
   isRefetching: boolean;
@@ -21,8 +21,8 @@ interface Response {
   deleteList: (id: number) => void;
 }
 
-const useListsData = ({ debouncedSearch, recentLimit = 3 }: Params): Response => {
-  const qAll = useAllListsQuery(debouncedSearch);
+const useListsData = ({ search, recentLimit = 3 }: Params): Response => {
+  const qAll = useAllListsQuery(search);
   const qRecent = useRecentListsQuery(recentLimit);
   const m = useListMutations(recentLimit);
 
@@ -36,9 +36,9 @@ const useListsData = ({ debouncedSearch, recentLimit = 3 }: Params): Response =>
       qAll.refetch();
       qRecent.refetch();
     },
-    createList: (name: string) => m.createM.mutate(name),
+    createList: (name: string) => m.createM.mutate({ name }),
     renameList: (id: number, name: string) => m.renameM.mutate({ id, name }),
-    deleteList: (id: number) => m.deleteM.mutate(id),
+    deleteList: (id: number) => m.deleteM.mutate({ id }),
   };
 };
 

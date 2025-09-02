@@ -7,10 +7,10 @@ import { Pressable, Text, View } from 'react-native';
 
 import { Button } from '@/components';
 import { useTRDateTimeFormat } from '@/hooks';
-import type { ListItem } from '@/types/lists';
+import type { ListDto } from '@/validations';
 
 interface Props {
-  item: ListItem;
+  item: ListDto;
   onLongPress?: () => void;
   onDelete?: () => void;
   intensity?: number;

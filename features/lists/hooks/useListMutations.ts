@@ -1,34 +1,36 @@
 import { useMutation, useQueryClient, type UseMutationResult } from '@tanstack/react-query';
 
 import { createList, deleteList, listsKeys, updateList } from '@/queries';
-import type { ListItem } from '@/types/lists';
+import {
+  getZodMessage,
+  type ListCreate,
+  type ListDelete,
+  type ListDto,
+  type ListUpdate,
+} from '@/validations';
 
-type Ctx = { prev: ListItem[] };
-type CreateVars = string;
-type RenameVars = { id: number; name: string };
-type DeleteVars = number;
+type Ctx = { prev: ListDto[] };
 
 interface Response {
-  createM: UseMutationResult<unknown, unknown, CreateVars, Ctx | undefined>;
-  renameM: UseMutationResult<unknown, unknown, RenameVars, Ctx | undefined>;
-  deleteM: UseMutationResult<unknown, unknown, DeleteVars, Ctx | undefined>;
+  createM: UseMutationResult<unknown, unknown, ListCreate, Ctx | undefined>;
+  renameM: UseMutationResult<unknown, unknown, ListUpdate, Ctx | undefined>;
+  deleteM: UseMutationResult<unknown, unknown, ListDelete, Ctx | undefined>;
   invalidateAll: () => void;
 }
 
 const useListMutations = (recentLimit: number): Response => {
   const qc = useQueryClient();
 
+  const snapshot = (): ListDto[] => qc.getQueryData(listsKeys.all) ?? [];
+  const setAll = (next: ListDto[]): unknown => qc.setQueryData(listsKeys.all, next);
   const invalidateAll = (): void => {
     qc.invalidateQueries({ queryKey: listsKeys.all });
     qc.invalidateQueries({ queryKey: [...listsKeys.all, 'recent', recentLimit] });
   };
 
-  const snapshot = (): ListItem[] => (qc.getQueryData(listsKeys.all) as ListItem[]) ?? [];
-  const setAll = (next: ListItem[]): unknown => qc.setQueryData(listsKeys.all, next);
-
-  const createM = useMutation<unknown, unknown, CreateVars, Ctx | undefined>({
-    mutationFn: (name) => createList(name),
-    onMutate: async (name) => {
+  const createM = useMutation<unknown, unknown, ListCreate, Ctx | undefined>({
+    mutationFn: ({ name }) => createList({ name }),
+    onMutate: async ({ name }) => {
       await qc.cancelQueries({ queryKey: listsKeys.all });
       const prev = snapshot();
       setAll([
@@ -37,14 +39,15 @@ const useListMutations = (recentLimit: number): Response => {
       ]);
       return { prev };
     },
-    onError: (_e, _name, ctx) => {
+    onError: (err, _vars, ctx) => {
+      console.error(getZodMessage(err));
       if (ctx?.prev) setAll(ctx.prev);
     },
     onSettled: () => invalidateAll(),
   });
 
-  const renameM = useMutation<unknown, unknown, RenameVars, Ctx | undefined>({
-    mutationFn: ({ id, name }) => updateList(id, name),
+  const renameM = useMutation<unknown, unknown, ListUpdate, Ctx | undefined>({
+    mutationFn: ({ id, name }) => updateList({ id, name }),
     onMutate: async ({ id, name }) => {
       await qc.cancelQueries({ queryKey: listsKeys.all });
       const prev = snapshot();
@@ -53,21 +56,23 @@ const useListMutations = (recentLimit: number): Response => {
       );
       return { prev };
     },
-    onError: (_e, _vars, ctx) => {
+    onError: (err, _vars, ctx) => {
+      console.error(getZodMessage(err));
       if (ctx?.prev) setAll(ctx.prev);
     },
     onSettled: () => invalidateAll(),
   });
 
-  const deleteM = useMutation<unknown, unknown, DeleteVars, Ctx | undefined>({
-    mutationFn: (id) => deleteList(id),
-    onMutate: async (id) => {
+  const deleteM = useMutation<unknown, unknown, ListDelete, Ctx | undefined>({
+    mutationFn: ({ id }) => deleteList({ id }),
+    onMutate: async ({ id }) => {
       await qc.cancelQueries({ queryKey: listsKeys.all });
       const prev = snapshot();
       setAll(prev.filter((l) => l.id !== id));
       return { prev };
     },
-    onError: (_e, _id, ctx) => {
+    onError: (err, _vars, ctx) => {
+      console.error(getZodMessage(err));
       if (ctx?.prev) setAll(ctx.prev);
     },
     onSettled: () => invalidateAll(),

@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Container, GradientBackground, LanguageSwitcher } from '@/components';
 
-import { AnimatedBlob, CTA, Floating, HeroCard } from '../components';
+import { AnimatedBlob, Floating, Footer, HeroCard } from '../components';
 
 const LandingScreen = () => {
   const { t } = useTranslation();
@@ -67,9 +67,9 @@ const LandingScreen = () => {
           </Floating>
         </View>
       </View>
-      <CTA
-        title={t('landing.cta.btnText')}
-        subtitle={t('landing.cta.mutedText')}
+      <Footer
+        title={t('landing.footer.btnText')}
+        subtitle={t('landing.footer.mutedText')}
         onPress={() => router.push('/lists')}
       />
     </Container>

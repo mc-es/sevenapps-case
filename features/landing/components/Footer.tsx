@@ -12,7 +12,7 @@ interface Props {
   end?: { x: number; y: number };
 }
 
-const CTA = (props: Props) => {
+const Footer = (props: Props) => {
   const {
     title,
     subtitle,
@@ -47,7 +47,7 @@ const CTA = (props: Props) => {
   );
 };
 
-export default memo(CTA);
+export default memo(Footer);
 
 const styles = {
   container: 'px-6',

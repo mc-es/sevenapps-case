@@ -63,7 +63,7 @@
       "meetingNotes": "Meeting Notes",
       "trainingPlan": "Training Plan"
     },
-    "cta": {
+    "footer": {
       "btnText": "Go to my Lists",
       "mutedText": "Create a list in seconds, start tasks."
     }

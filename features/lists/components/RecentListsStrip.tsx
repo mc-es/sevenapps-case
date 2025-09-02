@@ -5,10 +5,10 @@ import type { ListRenderItem } from 'react-native';
 import { FlatList, Pressable, Text, View } from 'react-native';
 
 import { useTRDateTimeFormat } from '@/hooks';
-import type { ListItem } from '@/types/lists';
+import type { ListDto } from '@/validations';
 
 interface Props {
-  items: ListItem[];
+  items: ListDto[];
   title: string;
   intensity?: number;
   tint?: 'light' | 'dark' | 'default';
@@ -21,7 +21,7 @@ const RecentListsStrip = (props: Props) => {
 
   const fmt = useTRDateTimeFormat();
 
-  const renderItem: ListRenderItem<ListItem> = useCallback(({ item }) => {
+  const renderItem: ListRenderItem<ListDto> = useCallback(({ item }) => {
     const created = item?.created_at ? fmt.format(new Date(item.created_at)) : null;
 
     return (

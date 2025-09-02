@@ -28,7 +28,7 @@ const ListsScreen = () => {
     createList,
     renameList,
     deleteList,
-  } = useListsData({ debouncedSearch: debounced, recentLimit: 3 });
+  } = useListsData({ search: debounced, recentLimit: 3 });
   const [renameVisible, setRenameVisible] = useState(false);
   const [renameValue, setRenameValue] = useState('');
   const [renameTargetId, setRenameTargetId] = useState<number | null>(null);

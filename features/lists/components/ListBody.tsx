@@ -3,17 +3,17 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, RefreshControl, Text } from 'react-native';
 
 import { Button } from '@/components';
-import type { ListItem } from '@/types/lists';
+import type { ListDto } from '@/validations';
 
 import ListCard from './ListCard';
 
 interface Props {
-  lists: ListItem[];
+  lists: ListDto[];
   isRefetching: boolean;
   refetchAll: () => void;
   onButtonPress: () => void;
-  onLongPressItem: (item: ListItem) => void;
-  onDeleteItem: (item: ListItem) => void;
+  onLongPressItem: (item: ListDto) => void;
+  onDeleteItem: (item: ListDto) => void;
 }
 
 const ListBody = (props: Props) => {

@@ -63,7 +63,7 @@
       "meetingNotes": "Toplantı Notları",
       "trainingPlan": "Antrenman Planı"
     },
-    "cta": {
+    "footer": {
       "btnText": "Listelerime Git",
       "mutedText": "Saniyeler içinde liste oluştur, görevlere başla."
     }
