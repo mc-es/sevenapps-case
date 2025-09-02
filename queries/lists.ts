@@ -1,19 +1,17 @@
 import { desc, eq, like } from 'drizzle-orm';
 
 import {
+  ListByIdSchema,
   ListCreateSchema,
-  ListDeleteSchema,
   ListDtoArraySchema,
   ListDtoSchema,
-  ListGetByIdSchema,
   ListSearchSchema,
   ListUpdateSchema,
   RecentLimitSchema,
   validateInput,
   validateOutput,
+  type ListById,
   type ListCreate,
-  type ListDelete,
-  type ListGetById,
   type ListSearch,
   type ListUpdate,
   type RecentLimit,
@@ -25,8 +23,8 @@ import { simulateNetworkLatency } from './utils';
 
 const inCreate = validateInput(ListCreateSchema);
 const inUpdate = validateInput(ListUpdateSchema);
-const inDelete = validateInput(ListDeleteSchema);
-const inGetById = validateInput(ListGetByIdSchema);
+const inDelete = validateInput(ListByIdSchema);
+const inGetById = validateInput(ListByIdSchema);
 const inSearch = validateInput(ListSearchSchema);
 const inRecent = validateInput(RecentLimitSchema);
 
@@ -39,7 +37,7 @@ const getAllLists = async () => {
   return outListArray(rows);
 };
 
-const getListById = async (args: ListGetById) => {
+const getListById = async (args: ListById) => {
   await simulateNetworkLatency();
   const { id } = inGetById(args);
   const row = db.select().from(lists).where(eq(lists.id, id)).get();
@@ -62,7 +60,7 @@ const updateList = async (args: ListUpdate) => {
     .run();
 };
 
-const deleteList = async (args: ListDelete) => {
+const deleteList = async (args: ListById) => {
   await simulateNetworkLatency();
   const { id } = inDelete(args);
   return db.delete(lists).where(eq(lists.id, id)).run();

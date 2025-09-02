@@ -29,7 +29,7 @@
     "tasks": "Tasks are loading..."
   },
   "placeholder": {
-    "list": "Search List",
+    "searchList": "Search List",
     "newName": "New Name",
     "newTaskTitle": "Eg: Buy Basket",
     "newTaskDescription": "Optional Description",

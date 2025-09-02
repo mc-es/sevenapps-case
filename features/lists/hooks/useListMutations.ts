@@ -3,8 +3,8 @@ import { useMutation, useQueryClient, type UseMutationResult } from '@tanstack/r
 import { createList, deleteList, listsKeys, updateList } from '@/queries';
 import {
   getZodMessage,
+  type ListById,
   type ListCreate,
-  type ListDelete,
   type ListDto,
   type ListUpdate,
 } from '@/validations';
@@ -14,7 +14,7 @@ type Ctx = { prev: ListDto[] };
 interface Response {
   createM: UseMutationResult<unknown, unknown, ListCreate, Ctx | undefined>;
   renameM: UseMutationResult<unknown, unknown, ListUpdate, Ctx | undefined>;
-  deleteM: UseMutationResult<unknown, unknown, ListDelete, Ctx | undefined>;
+  deleteM: UseMutationResult<unknown, unknown, ListById, Ctx | undefined>;
   invalidateAll: () => void;
 }
 
@@ -63,7 +63,7 @@ const useListMutations = (recentLimit: number): Response => {
     onSettled: () => invalidateAll(),
   });
 
-  const deleteM = useMutation<unknown, unknown, ListDelete, Ctx | undefined>({
+  const deleteM = useMutation<unknown, unknown, ListById, Ctx | undefined>({
     mutationFn: ({ id }) => deleteList({ id }),
     onMutate: async ({ id }) => {
       await qc.cancelQueries({ queryKey: listsKeys.all });

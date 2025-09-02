@@ -1,9 +1,9 @@
 import { z, ZodError } from 'zod';
 
-const zId = z.number().int().positive();
-const zName = z.string().trim().min(1, 'Necessary').max(100, 'Too long');
-const zDate = z.string().trim().optional();
-const zPositiveInt = z.number().int().positive();
+const zNumber = z.number().int().positive();
+const zRequiredString = z.string().trim().min(1, 'Necessary').max(100, 'Too long');
+const zOptionalString = z.string().trim().optional();
+const zBoolean = z.boolean().optional();
 
 const parseOrThrow = <T>(schema: z.ZodType<T>, data: unknown): T => {
   const r = schema.safeParse(data);
@@ -28,4 +28,12 @@ const getZodMessage = (err: unknown, fallback = 'invalid data'): string => {
   return fallback;
 };
 
-export { getZodMessage, validateInput, validateOutput, zDate, zId, zName, zPositiveInt };
+export {
+  getZodMessage,
+  validateInput,
+  validateOutput,
+  zBoolean,
+  zNumber,
+  zOptionalString,
+  zRequiredString,
+};

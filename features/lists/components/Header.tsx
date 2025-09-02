@@ -30,7 +30,7 @@ const Header = (props: Props) => {
           <InputBox
             value={search}
             onChangeText={onChangeSearch}
-            placeholder={t('placeholder.list')}
+            placeholder={t('placeholder.searchList')}
             variant="glass"
             containerClassName="flex-1"
             inputClassName="px-2"

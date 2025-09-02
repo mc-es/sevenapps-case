@@ -29,7 +29,7 @@
     "tasks": "Görevler yükleniyor..."
   },
   "placeholder": {
-    "list": "Liste Ara",
+    "searchList": "Liste Ara",
     "newName": "Yeni Ad",
     "newTaskTitle": "Örn: Sepet al",
     "newTaskDescription": "İsteğe bağlı açıklama",
