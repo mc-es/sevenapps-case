@@ -9,6 +9,18 @@ jest.mock('@react-native-async-storage/async-storage', () =>
   require('@react-native-async-storage/async-storage/jest/async-storage-mock'),
 );
 
+jest.mock('react-native/Libraries/Interaction/InteractionManager', () => {
+  const Actual = jest.requireActual('react-native/Libraries/Interaction/InteractionManager');
+  return {
+    ...Actual,
+    runAfterInteractions: jest.fn((task?: any) => {
+      if (typeof task === 'function') task();
+      else if (task && typeof task.gen === 'function') task.gen();
+      return { then: (cb?: () => void) => cb?.(), cancel: () => {} };
+    }),
+  };
+});
+
 jest.mock('react-native-safe-area-context', () => {
   const actual = jest.requireActual('react-native-safe-area-context');
   return {
@@ -93,6 +105,11 @@ jest.mock('@/hooks', () => {
   return {
     ...actual,
     useDebouncedValue: (v: string) => v,
+    useInOutAnimation: () => ({
+      open: true,
+      backdropStyle: {},
+      cardStyle: {},
+    }),
     useTRDateTimeFormat: () => ({
       format: (d: Date) => {
         const day = pad(d.getUTCDate());

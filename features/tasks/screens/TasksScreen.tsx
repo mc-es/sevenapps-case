@@ -53,8 +53,7 @@ const TasksScreen = () => {
 
   const tasksForRender = useMemo(() => {
     let arr = [...displayTasks];
-    if (priorityFilter)
-      arr = arr.filter((task) => (task.priority as Priority | undefined) === priorityFilter);
+    if (priorityFilter) arr = arr.filter((task) => task.priority === priorityFilter);
     return arr;
   }, [displayTasks, priorityFilter]);
 

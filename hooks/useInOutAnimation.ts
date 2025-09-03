@@ -24,8 +24,8 @@ const defaults = {
   translateY: { from: 20, to: 0 },
   inDuration: 220,
   outDuration: 180,
-  easingIn: Easing.out(Easing.quad) as EasingFunction,
-  easingOut: Easing.in(Easing.quad) as EasingFunction,
+  easingIn: Easing.out(Easing.quad),
+  easingOut: Easing.in(Easing.quad),
   fadeOffset: 60,
 } as const;
 

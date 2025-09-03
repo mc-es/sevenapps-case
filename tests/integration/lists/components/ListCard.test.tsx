@@ -1,9 +1,8 @@
 import { fireEvent } from '@testing-library/react-native';
+import { Pressable, Text } from 'react-native';
 
 import ListCard from '@/features/lists/components/ListCard';
-import { resetTranslations, setTranslations, t } from '@/tests/utils';
-import { renderWithProviders } from '@/tests/utils/render';
-import { Pressable, Text } from 'react-native';
+import { renderWithProviders, resetTranslations, setTranslations, t } from '@/tests/utils';
 
 const mockButton = jest.fn(({ title, onPress }) => (
   <Pressable accessibilityRole="button" onPress={onPress}>

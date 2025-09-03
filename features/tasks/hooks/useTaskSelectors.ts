@@ -25,7 +25,7 @@ const useTaskSelectors = ({ tasks, search, tab, priority }: Params): Response =>
       arr = arr.filter((t) => t.name?.toLowerCase().includes(q));
     }
 
-    if (priority) arr = arr.filter((t) => (t.priority as Priority | undefined) === priority);
+    if (priority) arr = arr.filter((t) => t.priority === priority);
 
     const nowIso = new Date().toISOString();
     if (tab === 'upcoming') {
