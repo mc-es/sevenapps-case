@@ -3,13 +3,7 @@
 A simple, fast, and stylish **TODO** app (Expo + React Native).
 
 > 🎥 **Demo video**
-
-<p align="center">
-  <video src="./assets/todo-intro.mp4" controls playsinline width="720">
-    Your browser doesn’t support HTML5 video.
-    Here is a <a href="./assets/todo-intro.mp4?raw=1">direct link</a>.
-  </video>
-</p>
+![Download the demo](https://github.com/mc-es/sevenapps-case/blob/master/assets/todo-intro.mp4)
 
 > **Note**: This demo was recorded on an **Expo developer build**, so performance and visuals may slightly differ from a production release.
 
