@@ -33,6 +33,7 @@ export default defineConfig([
       'coverage/**',
       'public/**',
       'app/**',
+      'tests/**',
       'drizzle/**',
       '*.config.*',
       '*.setup.*',
