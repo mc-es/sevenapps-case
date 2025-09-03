@@ -1,0 +1,92 @@
+{
+  "global": {
+    "creation": "Oluşturma",
+    "delete": "Sil",
+    "save": "Kaydet",
+    "cancel": "Vazgeç",
+    "add": "Ekle",
+    "rename": "Yeniden Adlandır",
+    "close": "Kapat",
+    "edit": "Düzenle",
+    "name": "Ad",
+    "description": "Açıklama",
+    "priority": "Öncelik",
+    "low": "Düşük",
+    "medium": "Orta",
+    "high": "Yüksek",
+    "search": "Ara",
+    "all": "Tümü",
+    "upcoming": "Yaklaşan",
+    "completed": "Tamamlanan",
+    "start": "Başla",
+    "pause": "Durdur",
+    "dueDate": "Bitiş Tarihi",
+    "pickDate": "Tarih Seç",
+    "clear": "Temizle"
+  },
+  "loading": {
+    "lists": "Listeler yükleniyor...",
+    "tasks": "Görevler yükleniyor..."
+  },
+  "placeholder": {
+    "searchList": "Liste Ara",
+    "newName": "Yeni Ad",
+    "newTaskTitle": "Örn: Sepet al",
+    "newTaskDescription": "İsteğe bağlı açıklama",
+    "searchTask": "Görev Ara"
+  },
+  "error": {
+    "message": "Bir hata oluştu...",
+    "tryAgain": "Tekrar dene",
+    "invalidId": "Geçersiz Id"
+  },
+  "alert": {
+    "error": "Hata",
+    "failedAddingList": "Liste ekleme başarısız oldu.",
+    "failedRenamingList": "Yeniden adlandırma başarısız oldu.",
+    "failedDeletingList": "Silme işlemi başarısız oldu.",
+    "requiredName": "Ad Zorunlu",
+    "failedUpdatingStatus": "Görev durumu güncellenemedi.",
+    "failedAddingTask": "Görev ekleme başarısız oldu.",
+    "failedUpdatingTask": "Görev güncellenemedi.",
+    "failedDeletingTask": "Silme işlemi başarısız oldu."
+  },
+  "landing": {
+    "title": "Zihnini boşalt, odaklan. Görevlerini akıcı bir deneyimle yönet.",
+    "badges": {
+      "fast": "Hızlı",
+      "basic": "Basit",
+      "fluent": "Akıcı"
+    },
+    "checkBoxList": {
+      "shopping": "Alışveriş Listesi",
+      "meetingNotes": "Toplantı Notları",
+      "trainingPlan": "Antrenman Planı"
+    },
+    "footer": {
+      "btnText": "Listelerime Git",
+      "mutedText": "Saniyeler içinde liste oluştur, görevlere başla."
+    }
+  },
+  "lists": {
+    "title": "Listelerin",
+    "subTitle": "Hoş Geldin",
+    "createNewList": "Yeni Liste {{counter}}",
+    "recentListTitle": "Son Oluşturulanlar",
+    "noListMessage": "Hiç Liste Yok...",
+    "addToListBtn": "Liste Ekle",
+    "confirmDialogTitle": "Bu Liste Silinecek",
+    "confirmDialogMessage": "{{name}} adlı liste kalıcı olarak silinecek."
+  },
+  "tasks": {
+    "title": "Görevler",
+    "formModalTitle1": "Görev Ekle",
+    "formModalTitle2": "Görevi Düzenle",
+    "noTaskHint": "Hiç Görev Yok...",
+    "noUpcomingHint": "Yaklaşan görev yok. Bir görevde bitiş tarihi belirleyin.",
+    "noCompletedHint": "Henüz tamamlanan görev yok.",
+    "addToTaskBtn": "Görev Ekle",
+    "confirmDialogTitle": "Bu Görev Silinecek",
+    "confirmDialogMessage": "{{name}} adlı görev kalıcı olarak silinecek."
+  }
+}

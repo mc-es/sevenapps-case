@@ -1,0 +1,172 @@
+import { useQuery } from '@tanstack/react-query';
+import { useLocalSearchParams } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ActivityIndicator, Text, View } from 'react-native';
+
+import { Button, ConfirmDialog, Container, GradientBackground } from '@/components';
+import { useDebouncedValue } from '@/hooks';
+import { getListById, listsKeys } from '@/queries';
+import type { Priority, Status, TaskDto } from '@/validations';
+
+import { Header, PriorityBar, TaskBody, TaskFormModal } from '../components';
+import { useTasksData } from '../hooks';
+
+const TasksScreen = () => {
+  const { t } = useTranslation();
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const listId = Number(id);
+  const validListId = Number.isFinite(listId);
+
+  const listQ = useQuery({
+    queryKey: [...listsKeys.all, 'detail', listId],
+    queryFn: () => getListById({ id: listId }),
+    enabled: validListId,
+    staleTime: 30_000,
+  });
+
+  const [search, setSearch] = useState('');
+  const debounced = useDebouncedValue(search, 400);
+
+  const [tab, setTab] = useState<'all' | 'upcoming' | 'completed'>('all');
+  const [priorityFilter, setPriorityFilter] = useState<Priority | null>(null);
+
+  const {
+    displayTasks,
+    completedCount,
+    isAnyLoading,
+    isAnyError,
+    isRefetching,
+    refetchAll,
+    toggleTask,
+    createTask,
+    editTask,
+    deleteTask,
+    setTaskStatus,
+  } = useTasksData({
+    listId,
+    search: debounced,
+    tab,
+    priorityFilter,
+  });
+
+  const tasksForRender = useMemo(() => {
+    let arr = [...displayTasks];
+    if (priorityFilter) arr = arr.filter((task) => task.priority === priorityFilter);
+    return arr;
+  }, [displayTasks, priorityFilter]);
+
+  const [createVisible, setCreateVisible] = useState(false);
+  const [editVisible, setEditVisible] = useState(false);
+  const [editing, setEditing] = useState<TaskDto | null>(null);
+
+  const [confirmVisible, setConfirmVisible] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<TaskDto | null>(null);
+
+  const openEdit = useCallback((item: TaskDto) => {
+    setEditing(item);
+    setEditVisible(true);
+  }, []);
+
+  if (!validListId) {
+    return (
+      <View className={styles.centerBox}>
+        <Text className="text-white">{t('error.invalidId')}</Text>
+      </View>
+    );
+  }
+
+  let content: React.ReactNode;
+
+  if (isAnyLoading && displayTasks.length === 0) {
+    content = (
+      <View className={styles.centerBox}>
+        <ActivityIndicator color="#fff" />
+        <Text className={styles.centerText}>{t('loading.tasks')}</Text>
+      </View>
+    );
+  } else if (isAnyError) {
+    content = (
+      <View className={styles.errorBox}>
+        <Text className={styles.errorTitle}>{t('error.message')}</Text>
+        <Button title={t('error.tryAgain')} onPress={refetchAll} />
+      </View>
+    );
+  } else {
+    content = (
+      <TaskBody
+        tasks={tasksForRender}
+        tab={tab}
+        completedCount={completedCount}
+        isRefetching={isRefetching}
+        refetchAll={refetchAll}
+        onAdd={() => setCreateVisible(true)}
+        onToggle={toggleTask}
+        onEdit={openEdit}
+        onDelete={(item) => {
+          setSelectedTask(item);
+          setConfirmVisible(true);
+        }}
+        onSetStatus={(item, status: Status) => setTaskStatus({ id: item.id, status })}
+      />
+    );
+  }
+
+  return (
+    <Container padding={{ top: 20 }}>
+      <StatusBar style="light" translucent backgroundColor="transparent" />
+      <GradientBackground />
+      <Header
+        title={listQ.data?.name ?? ''}
+        tab={tab}
+        onChangeTab={setTab}
+        search={search}
+        onChangeSearch={setSearch}
+      />
+      <PriorityBar value={priorityFilter} onChange={setPriorityFilter} />
+      {content}
+      <TaskFormModal
+        visible={createVisible}
+        mode="create"
+        onClose={() => setCreateVisible(false)}
+        onSubmit={(p) => createTask(p)}
+      />
+      <TaskFormModal
+        visible={editVisible}
+        mode="edit"
+        initial={{
+          name: editing?.name,
+          description: editing?.description,
+          priority: editing?.priority,
+          due_date: editing?.due_date,
+        }}
+        onClose={() => setEditVisible(false)}
+        onSubmit={(p) => {
+          if (!editing) return;
+          editTask({ id: editing.id, ...p });
+        }}
+      />
+      <ConfirmDialog
+        visible={confirmVisible}
+        title={t('tasks.confirmDialogTitle')}
+        message={t('tasks.confirmDialogMessage', { name: selectedTask?.name })}
+        confirmText={t('global.delete')}
+        cancelText={t('global.cancel')}
+        onCancel={() => setConfirmVisible(false)}
+        onConfirm={() => {
+          if (selectedTask) deleteTask(selectedTask.id);
+        }}
+      />
+    </Container>
+  );
+};
+
+export default TasksScreen;
+
+const styles = {
+  centerBox: 'flex-1 items-center justify-center',
+  centerText: 'mt-2 text-white/80',
+  errorBox: 'flex-1 items-center justify-center px-4',
+  errorTitle: 'font-semibold text-base mb-2 text-white',
+} as const;

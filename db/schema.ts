@@ -1,11 +1,11 @@
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 export const tasks = sqliteTable('tasks', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   name: text('name').notNull(),
   description: text('description'),
   image: text('image'),
-  status: text('status').default('pending'),
+  status: text('status').default('not_started'),
   priority: text('priority').default('medium'),
   is_completed: integer('is_completed', { mode: 'boolean' }).default(false),
   due_date: text('due_date'),

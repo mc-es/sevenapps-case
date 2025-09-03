@@ -1,9 +1,10 @@
 {
   "expo": {
-    "name": "sevenapps-react-native-case-study",
-    "slug": "sevenapps-react-native-case-study",
+    "name": "todo-7a",
+    "slug": "todo-7a",
     "version": "1.0.0",
-    "scheme": "sevenapps-react-native-case-study",
+    "scheme": "todo-7a",
+    "newArchEnabled": true,
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -11,7 +12,20 @@
     },
     "plugins": [
       "expo-router",
-      "expo-sqlite"
+      "expo-sqlite",
+      "expo-localization",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#F5F5F5",
+          "image": "./assets/splash-icon-dark.png",
+          "resizeMode": "contain",
+          "dark": {
+            "backgroundColor": "#151718",
+            "image": "./assets/splash-icon-light.png"
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
@@ -21,21 +35,27 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash-icon-dark.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#F5F5F5"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ff6347"
+      },
+      "package": "com.mces.todo7a"
+    },
+    "extra": {
+      "router": { "origin": false },
+      "eas": {
+        "projectId": "3453b07f-f9b7-4541-8ef4-6f1645f879ce"
       }
-    }
+    },
+    "owner": "mc-es"
   }
 }

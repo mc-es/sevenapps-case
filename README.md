@@ -1,77 +1,98 @@
-# SevenApps React Native Case Study
+# Seven TODO
 
-## Overview
+A simple, fast, and stylish **TODO** app (Expo + React Native).
 
-This repository contains a case study for React Native developers applying to SevenApps. The project is a task/todo management application where candidates will demonstrate their ability to handle asynchronous operations and implement proper UI components.
+> 🎥 **Demo video**
 
-## What's Provided
+<p align="center">
+  <video src="./assets/todo-intro.mp4" controls playsinline width="720">
+    Your browser doesn’t support HTML5 video.
+    Here is a <a href="./assets/todo-intro.mp4?raw=1">direct link</a>.
+  </video>
+</p>
 
-- **Database Schema** (`db/schema.ts`): Contains table definitions for tasks and lists
-- **API Queries**:
-  - `queries/tasks.ts`: Complete set of functions for task management (create, read, update, delete, search, filter)
-  - `queries/lists.ts`: Complete set of functions for list management (create, read, update, delete, search)
-- **Project Setup**: Expo-based React Native app with basic configuration
+> **Note**: This demo was recorded on an **Expo developer build**, so performance and visuals may slightly differ from a production release.
 
-All API functions simulate network latency to emulate real-world scenarios, giving candidates the opportunity to implement proper loading states, error handling, and optimistic updates.
+---
 
-## Task Requirements
+## Features
 
-Candidates should build a functional task management application using the provided database schema and query functions. **You do not need to modify the files in `db/schema.ts`, `queries/tasks.ts`, or `queries/lists.ts`**. Instead, focus on:
+- **Landing**: animated blobs, glass (blur) card, footer, language switcher.
+- **Lists**: create, rename, delete, search, “recently created” strip.
+- **Tasks**: create/edit/delete, complete, change status, **priority** & **text search** filters.
+- **Performance**: React Query cache, optimistic updates.
+- **Theme**: NativeWind/Tailwind + Blur/Gradient.
 
-1. Creating a clean, functional UI for managing tasks and lists
-2. Implementing proper async call handling:
-   - Loading states
-   - Error handling
-   - Data fetching and refreshing
-   - Optimistic updates where appropriate
-3. Creating a smooth user experience despite the simulated network delays
+---
 
-## Evaluation Criteria
+## Tech Stack
 
-We will primarily evaluate:
+- Expo, React Native, Expo Router
+- SQLite + Drizzle ORM
+- @tanstack/react-query
+- Zustand (small UI state)
+- i18next (multi-language)
+- zod (validations)
+- eslint-prettier (formatting and lintting)
+- husky-commitlint-lintstage (conventional commit)
+- Jest + @testing-library/react-native
 
-1. **Async Operation Handling**: How you manage loading states, errors, and data refreshing
-2. **Code Organization**: Clean architecture and separation of concerns
-3. **TypeScript Usage**: Proper typing and type safety
-4. **Component Design**: Reusable and maintainable components
+---
 
-## Bonus Points
-
-While not required, we appreciate candidates who demonstrate:
-
-- **Data Validation**: Usage of Zod or similar validation libraries
-- **Styling**: Effective use of NativeWind (provided in the project)
-- **Data Fetching**: Implementation of TanStack Query (React Query) for data management
-- **State Management**: Usage of a global state solution (Zustand is already provided)
-- **Testing**: Addition of unit and/or integration tests
-- **Error Handling**: Well-thought-out error management, fallbacks, and recovery
-- **Optimistic Updates**: Implementation of optimistic UI updates for a smoother user experience
-
-## UI Design
-
-While impressive UI design is not the primary focus of this case study, a clean and functional interface is expected. We appreciate attention to detail and thoughtful user experience design, but the main evaluation will be on your code implementation and handling of asynchronous operations.
-
-## Getting Started
+## Setup
 
 ```bash
-# Install dependencies (use your preferred package manager)
 npm install
-# or
-yarn install
-# or
-pnpm install
-
-# Generate the database schema (IMPORTANT: do this before starting development)
-npm run generate-schema
-
+npm run start         # or: npx expo start
+# Android: a, iOS: i
 ```
 
-Follow the Expo CLI instructions to run the app on your preferred platform (iOS, Android, or web).
+---
 
-## Important Note
-
-**Before starting development, you MUST run the database schema generation command** to set up the SQLite database structure:
+## Scripts
 
 ```bash
-npm run generate-schema
+npm run start            # Expo
+npm run android          # Android
+npm run ios              # iOS
+npm test                 # Tests
+npm run check:deps       # Deps
+npm run check:expo       # Expo
+npm run format:prettier  # Prettier
+npm run format:eslint    # Eslint
+```
+
+---
+
+## Folder Structure (overview)
+
+```
+features/
+  landing/ (components, hooks, screens)
+  lists/   (components, hooks, screens)
+  tasks/   (components, hooks, screens)
+components/      # Button, InputBox, Container, Dialog, BottomSheet, Gradient...
+queries/         # lists.ts, tasks.ts, keys.ts, utils.ts
+db/              # schema + sqlite
+providers/       # QueryClient + DB provider
+store/           # zustand
+types/           # types
+tests/           # unit + integration
+validations/     # zod schemas
+i18n/            # translations
+libs/            # twMerge and clsx
+scripts/         # commit formating
+```
+
+---
+
+## Testing
+
+- **Unit**: hooks
+- **Integration**: full screen flows (Landing, ListsScreen, TasksScreen)
+
+Run:
+
+```bash
+npm test
 ```

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+COMMIT_SCRIPTS_DIR="$(dirname "$0")/../scripts"
+
+bash "$COMMIT_SCRIPTS_DIR/commit-format-check.sh" "$1" || exit 1
+bash "$COMMIT_SCRIPTS_DIR/commit-tense-check.sh" "$1"
+
+exit 0
