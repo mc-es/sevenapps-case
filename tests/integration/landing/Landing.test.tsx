@@ -5,16 +5,16 @@ import { fireEvent } from '@testing-library/react-native';
 import { router } from 'expo-router';
 
 jest.mock('@/components', () => {
-  const { Text } = require('react-native');
+  const { Text, Pressable } = require('react-native');
   return {
     __esModule: true,
     Container: ({ children }: any) => <>{children}</>,
     GradientBackground: () => null,
     LanguageSwitcher: () => null,
     Button: ({ title, onPress }: any) => (
-      <Text accessibilityRole="button" onPress={onPress}>
-        {title}
-      </Text>
+      <Pressable accessibilityRole="button" onPress={onPress}>
+        <Text>{title}</Text>
+      </Pressable>
     ),
   };
 });
@@ -23,24 +23,15 @@ describe('LandingScreen', () => {
   beforeEach(() => {
     resetTranslations();
     setTranslations({
-      'landing.title': 'Empty your mind, focus. Manage your duties with a fluent experience.',
-      'landing.badges.fast': 'Fast',
-      'landing.badges.basic': 'Basic',
-      'landing.badges.fluent': 'Fluent',
-      'landing.checkBoxList.shopping': 'Shopping List',
-      'landing.checkBoxList.meetingNotes': 'Meeting Notes',
-      'landing.checkBoxList.trainingPlan': 'Training Plan',
       'landing.footer.btnText': 'Go to my Lists',
-      'landing.footer.mutedText': 'Create a list in seconds, start tasks.',
     });
   });
 
   it('Direct to the lists screen when Footer clicked', () => {
     const { getByRole } = renderWithProviders(<LandingScreen />);
 
-    const label = t('landing.footer.btnText');
-    const cta = getByRole('button', { name: new RegExp(label, 'i') });
-    fireEvent.press(cta);
+    const footerBtn = getByRole('button', { name: t('landing.footer.btnText') });
+    fireEvent.press(footerBtn);
 
     expect(router.push).toHaveBeenCalledWith('/lists');
   });

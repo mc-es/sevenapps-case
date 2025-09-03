@@ -1,10 +1,15 @@
 import { fireEvent } from '@testing-library/react-native';
-import { Text } from 'react-native';
+import { Pressable, Text } from 'react-native';
 
 import Footer from '@/features/landing/components/Footer';
 import { renderWithProviders } from '@/tests/utils';
 
-const mockButton = jest.fn(({ title, onPress }: any) => <Text onPress={onPress}>{title}</Text>);
+const mockButton = jest.fn(({ title, onPress }) => (
+  <Pressable accessibilityRole="button" onPress={onPress}>
+    <Text>{title}</Text>
+  </Pressable>
+));
+
 jest.mock('@/components', () => ({
   __esModule: true,
   Button: (props: any) => mockButton(props),

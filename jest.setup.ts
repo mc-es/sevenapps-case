@@ -58,6 +58,18 @@ jest.mock('expo-sqlite', () => {
   };
 });
 
+jest.mock('expo-haptics', () => ({
+  __esModule: true,
+  NotificationFeedbackType: {
+    Success: 'Success',
+    Warning: 'Warning',
+    Error: 'Error',
+  },
+  notificationAsync: jest.fn().mockResolvedValue(undefined),
+  impactAsync: jest.fn().mockResolvedValue(undefined),
+  selectionAsync: jest.fn().mockResolvedValue(undefined),
+}));
+
 jest.mock('@expo/vector-icons', () => {
   const Ionicons = jest.fn(() => null);
   return { Ionicons };
@@ -74,6 +86,30 @@ jest.mock('react-i18next', () => {
     Trans: ({ i18nKey, children }: any) => (i18nStore.t ? i18nStore.t(i18nKey) : children),
   };
 });
+
+jest.mock('@/hooks', () => {
+  const actual = jest.requireActual('@/hooks');
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return {
+    ...actual,
+    useDebouncedValue: (v: string) => v,
+    useTRDateTimeFormat: () => ({
+      format: (d: Date) => {
+        const day = pad(d.getUTCDate());
+        const month = pad(d.getUTCMonth() + 1);
+        const year = d.getUTCFullYear();
+        const hours = pad(d.getUTCHours());
+        const mins = pad(d.getUTCMinutes());
+        return `${day}.${month}.${year} ${hours}:${mins}`;
+      },
+    }),
+  };
+});
+
+jest.mock('@/validations', () => ({
+  __esModule: true,
+  getZodMessage: () => 'ERR',
+}));
 
 jest.mock('@/features/landing/hooks', () => {
   const { Animated } = require('react-native');
